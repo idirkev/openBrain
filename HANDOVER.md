@@ -105,9 +105,9 @@ Supabase CLI v2.75.0 installed via Homebrew. Update available: v2.78.1.
 - 13 existing Gemini transcripts in source folder (pending first automated run)
 - Kris email drafted with full setup instructions + Google Apps Script
 
-### Needs Deploy
-- `supabase functions deploy ingest-thought` (updated Slack reply)
-- `supabase functions deploy meeting-notes` (updated extraction prompt)
+### Deployed (March 16, 2026)
+- ✅ `supabase functions deploy ingest-thought` (updated Slack reply)
+- ✅ `supabase functions deploy meeting-notes` (updated extraction prompt)
 
 ### Next Phase
 - Kris to provide his Gemini folder ID for his own Apps Script instance

@@ -32,7 +32,7 @@ Expanded from 8 personal templates to 19 across 3 layers.
 - [x] Designed 3-layer structure: Team Core (8), Role (6), Personal (5)
 - [x] Updated ingest-thought classification prompt with 19 keyword rules
 - [x] Updated ingest-thought Slack reply: shows template name + domain emoji
-- [x] Needs deploy: `supabase functions deploy ingest-thought`
+- [x] Deployed: `supabase functions deploy ingest-thought`
 
 **Templates:**
 
@@ -55,7 +55,7 @@ Gemini transcripts auto-processed into structured chunks.
 - [x] Google Apps Script: reads Meet Recordings folder, sends to Edge Function, creates summary doc
 - [x] Output docs go to shared team folder (1vMbn6SLMLxe7YYUNabhXtz5aqFsEu2BC)
 - [x] Processed files marked "ob-processed" to prevent duplicates
-- [x] Needs deploy: `supabase functions deploy meeting-notes`
+- [x] Deployed: `supabase functions deploy meeting-notes`
 - [x] 13 existing transcripts in source folder ready for first automated run
 
 **Google Apps Script setup:** Standalone script with time-driven trigger (every 15 min). No deployment type needed. Just add trigger at script.google.com.
@@ -89,16 +89,16 @@ Single web page, daily summary, phone-friendly.
 
 - [ ] Scaffold Next.js app on Vercel
 - [ ] Supabase query: yesterday's captures, open action items, people context
-- [ ] Google Calendar API: today's schedule
+- [ ] Gemini Gem: "Morning Brief" pulls today's calendar + unread priority emails + recent Drive activity
+- [ ] Gemini output feeds into briefing page (replaces raw Google Calendar API calls)
 - [ ] OpenWeather API: Dublin weather
 - [ ] Positive news feed (Good News Network RSS or similar)
 - [ ] Renewable energy tickers (Yahoo Finance API: ICLN, TAN)
 - [ ] Render all on one page, optimised for mobile
 - [ ] Scheduled Edge Function: 8am Slack DM with briefing summary
-- [ ] Codex review against dashboard code
-- [ ] Test and deploy
+- [ ] Review and deploy
 
-**Stack:** Next.js on Vercel, Supabase client, Google Calendar API, OpenWeather, Yahoo Finance
+**Stack:** Next.js on Vercel, Supabase client, Gemini Gem (Calendar + Gmail + Drive), OpenWeather, Yahoo Finance
 
 ---
 
@@ -130,31 +130,33 @@ Capture pattern for health goals.
 
 Automated inbox scanning for action items, deadlines, and correspondence.
 
-- [ ] Create gmail-ingest Google Apps Script (reads inbox every 15 min)
-- [ ] Scan for: emails needing replies, deadlines, deliverables, dates, action items
-- [ ] Track: inbound (received), outbound (sent), awaiting reply
-- [ ] Send extracted items to new email-ingest Edge Function
-- [ ] Edge Function classifies using templates: Sent, Stakeholder, Decision, Compliance, Contract
-- [ ] Create `email_items` table in Supabase (from, to, subject, action, due date, status)
+- [ ] Create Gemini Gem: "Email Triage" with access to Gmail
+- [ ] Gem extracts: emails needing replies, deadlines, deliverables, action items, correspondence
+- [ ] Gem classifies each item against Open Brain templates (Sent, Stakeholder, Decision, Compliance, Contract)
+- [ ] Apps Script triggers Gem every 15 min, sends structured output to email-ingest Edge Function
+- [ ] Edge Function stores pre-classified items (lighter work since Gemini already triaged)
+- [ ] Create `email_items` table in Supabase (from, to, subject, action, due date, status, template)
 - [ ] Mark processed emails with Gmail label "OB-processed" to prevent duplicates
 - [ ] Morning briefing includes: emails needing reply, overdue responses, upcoming deadlines
-- [ ] Codex review against email parsing logic
+- [ ] Review and deploy
 
 **Architecture:**
 ```
 Gmail (kev@idirnet.com)
     |
+    v (Gemini Gem: Email Triage -- classifies, extracts, structures)
+    |
     v (Google Apps Script, every 15 min)
 Supabase Edge Function: email-ingest
     |
-    v (classify, extract, embed)
+    v (embed, store -- classification already done by Gemini)
 Supabase: thoughts table + email_items table
     |
     v
 Morning briefing shows email status
 ```
 
-**Source files:** Google Apps Script at script.google.com, ~/supabase/functions/email-ingest/index.ts
+**Source files:** Gemini Gem at gemini.google.com, Google Apps Script at script.google.com, ~/supabase/functions/email-ingest/index.ts
 
 ---
 
@@ -174,9 +176,9 @@ Scheduled summary of the week's captures.
 ## Deploy Checklist
 
 ### Pending now
-```bash
-supabase functions deploy ingest-thought
-supabase functions deploy meeting-notes
+```
+✅ ingest-thought - deployed
+✅ meeting-notes - deployed
 ```
 
 ### After each phase build
@@ -184,29 +186,42 @@ supabase functions deploy meeting-notes
 # Deploy the new function
 supabase functions deploy [function-name]
 
-# Codex review (requires OpenAI API key or ChatGPT Plus/Pro)
-codex exec --sandbox read-only \
-  --full-auto \
-  --skip-git-repo-check \
-  "Review for bugs and logic errors" 2>/dev/null
+# Review during development (Kimi -- cheap, frequent)
+./scripts/kimi-agent.sh review
 
 # Commit
 git add -A && git commit -m "Phase N: description"
 ```
 
-### Codex CLI setup
-Current state: authenticated via ChatGPT free plan (kev@idirnet.com). Free plan blocks all exec models.
-
-Fix option A (API key):
+### Before deployment
 ```bash
-export OPENAI_API_KEY="sk-..."
+# Security audit (Kimi)
+./scripts/kimi-agent.sh security
+
+# Final quality gate (Codex -- runs after build)
+codex exec --sandbox read-only \
+  --full-auto \
+  --skip-git-repo-check \
+  "Review for bugs and logic errors" 2>/dev/null
+
+# Full project report card (Kimi)
+./scripts/kimi-agent.sh report
 ```
 
-Fix option B (upgrade ChatGPT, then re-auth):
-```bash
-codex auth logout
-codex auth login
-```
+### AI team setup
+
+| Step | Model | Cost | Setup |
+|------|-------|------|-------|
+| 1a. Code research | Kimi 2.5 | Low | `./scripts/kimi-agent.sh review` or swarm mode |
+| 1b. Google research | Gemini CLI + Kev | Free | `./scripts/gemini-agent.sh briefing\|email\|drive` |
+| 2. Decision | Claude Opus 4.6 | High | `/model opus`. Roadmap, architecture, master prompts. |
+| 3. Implementation | Claude Sonnet 4.6 | Medium | `/model sonnet`. Code, docs, config. |
+| 4. Correction | Claude Opus 4.6 | High | `/model opus`. Reviews and corrects Sonnet output. |
+| 5. Validation | Kimi 2.5 | Low | `./scripts/kimi-agent.sh review`. Checks against original research. |
+| 6. Integration | Gemini CLI + Kev | Free | `./scripts/gemini-agent.sh`. Google Workspace fit check. |
+| 7. Build gate | Codex (OpenAI) | High | Codex CLI. Stress tests. Runs once before deploy. |
+
+**Pipeline B:** Kimi + Gemini research in parallel > Opus decides > Sonnet builds > Opus corrects > Kimi validates > Gemini checks integration > Codex stress tests.
 
 ---
 
@@ -220,4 +235,6 @@ codex auth login
 | Google Apps Script (Gmail) | script.google.com ("Open Brain Gmail Ingest") — Phase 7 |
 | Project memory | ~/.claude/projects/-Users-kevfreeney-OPENBRAIN-openBrain/memory/ |
 | Agent routing | ~/OPENBRAIN/openBrain/CLAUDE.md |
+| Kimi launcher | ~/OPENBRAIN/openBrain/scripts/kimi-agent.sh |
+| Gemini launcher | ~/OPENBRAIN/openBrain/scripts/gemini-agent.sh |
 | This roadmap | ~/OPENBRAIN/openBrain/ROADMAP.md |

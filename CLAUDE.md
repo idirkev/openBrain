@@ -46,22 +46,83 @@ supabase functions deploy ingest-thought
 supabase functions deploy meeting-notes
 ```
 
-## After Builds
+## AI Team
 
-Run Codex for a second opinion:
+Five models. Pipeline B: Parallel Scout with correction loop.
 
-```bash
-codex exec --sandbox read-only \
-  --full-auto \
-  --skip-git-repo-check \
-  "Review for bugs and logic errors" 2>/dev/null
+```
+Kimi deep research ──────┐
+                         ├──> Opus decides ──> Sonnet builds ──> Opus corrects
+Gemini gathers Google ───┘
+                         ──> Kimi validates (against original research)
+                         ──> Gemini checks Google integration
+                         ──> Codex stress tests at build
 ```
 
-Claude Code = The Doer. Codex = The Hard Ass.
+| Step | Model | Job | Cost |
+|------|-------|-----|------|
+| 1a. Code research | Kimi 2.5 | Deep research, codebase analysis, swarm mode | Low |
+| 1b. Google research | Gemini CLI + Kev | Gather Calendar, Gmail, Drive context | Free |
+| 2. Decision | Claude Opus 4.6 | Architecture, roadmap, master prompts (with full context from 1a+1b) | High |
+| 3. Implementation | Claude Sonnet 4.6 | Fills in code, docs, config from Opus plan | Medium |
+| 4. Correction | Claude Opus 4.6 | Reviews Sonnet output, fixes logic, ensures quality | High |
+| 5. Validation | Kimi 2.5 | Validates against its original research. Did we miss anything? | Low |
+| 6. Integration check | Gemini CLI + Kev | How does the output fit into Google Workspace? | Free |
+| 7. Build gate | Codex (OpenAI) | Stress tests, error analysis, catches mistakes | High |
+
+**How to use in Claude Code:**
+- Steps 1a + 1b run in parallel (Kimi terminal + Gemini terminal)
+- Opus (`/model opus`) for steps 2 and 4. Decides, then corrects.
+- Sonnet (`/model sonnet`) for step 3. Does all the heavy lifting.
+- Subagents default to Sonnet via `model: "sonnet"` parameter.
+- Steps 5 + 6 can also run in parallel (Kimi terminal + Gemini terminal).
+
+**Quick commands (`ob` is on PATH):**
+```bash
+ob pipeline                    # Full Pipeline B (all 7 steps)
+ob pipeline --dry-run          # Preview steps, no execution
+ob pipeline --headless         # Fully automated via claude -p
+ob pipeline --from 3           # Resume from step N
+
+ob kimi research               # Deep research (swarm mode)
+ob kimi review                 # Code review
+ob kimi security               # Security audit
+ob kimi report                 # Project report card
+
+ob gemini briefing             # Morning briefing data
+ob gemini email                # Email triage
+ob gemini drive                # Drive search
+ob gemini briefing --mode think   # Use Gemini Deep Think
+
+ob codex                       # Codex stress test (final gate)
+
+ob versions                    # Show model registry + CLI versions
+ob update-check                # Check for CLI updates
+ob benchmark --task "..."      # Multivariate test across models
+ob help                        # Colour-coded help screen
+```
+
+**Manual mode (without `ob`):**
+```bash
+# Step 1a + 1b: Research (run in parallel, two terminal tabs)
+./scripts/kimi-agent.sh research          # Kimi: deep codebase analysis
+./scripts/gemini-agent.sh briefing        # Gemini: Google Workspace context
+
+# Step 2: Opus decides (switch to /model opus in Claude Code)
+# Step 3: Sonnet builds (switch to /model sonnet in Claude Code)
+# Step 4: Opus corrects (switch to /model opus in Claude Code)
+
+# Step 5 + 6: Validation (parallel)
+./scripts/kimi-agent.sh review            # Kimi validates against research
+./scripts/gemini-agent.sh drive           # Gemini checks Google integration
+
+# Step 7: Codex stress tests at build
+ob codex
+```
 
 ## Rules
 
 - Update ROADMAP.md checkboxes as work completes
 - Update project memory when decisions or phase changes happen
-- Every Edge Function change gets deployed and Codex-reviewed
+- Every Edge Function change gets deployed, Codex-reviewed, and Kimi-reviewed before phase close
 - Do not invent. Do not over-extract. Short sentences. No em dashes.

@@ -1,0 +1,654 @@
+#!/bin/bash
+# ob - Open Brain command router
+# Usage: ob <command> [args...]
+
+set -euo pipefail
+
+# =============================================================================
+# BOOTSTRAP: Resolve script directory and source libs
+# =============================================================================
+
+_OB_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "${_OB_SCRIPT_DIR}/lib/colors.sh"
+source "${_OB_SCRIPT_DIR}/lib/models.sh"
+
+
+# =============================================================================
+# INTERNAL HELPERS
+# =============================================================================
+
+_ob_require_arg() {
+    local flag="$1"
+    local value="$2"
+    if [[ -z "$value" ]]; then
+        printf "%b  ✘  Missing value for %s%b\n" "${UI_FAIL}" "$flag" "${NC}" >&2
+        exit 1
+    fi
+}
+
+_ob_script_exists() {
+    local script="$1"
+    if [[ ! -f "$script" ]]; then
+        printf "%b  ✘  Script not found: %s%b\n" "${UI_FAIL}" "$script" "${NC}" >&2
+        exit 1
+    fi
+}
+
+_ob_elapsed() {
+    # _ob_elapsed <start_epoch_seconds> -> integer seconds
+    local start="$1"
+    local end
+    end=$(date +%s)
+    printf "%d" $(( end - start ))
+}
+
+_ob_count_findings() {
+    local file="$1"
+    grep -c "^### Finding" "$file" 2>/dev/null || printf "0"
+}
+
+_ob_filesize_human() {
+    local file="$1"
+    local bytes
+    bytes=$(wc -c < "$file" 2>/dev/null || echo 0)
+    if [[ $bytes -ge 1048576 ]]; then
+        printf "%.1fMB" "$(echo "scale=1; $bytes/1048576" | bc)"
+    elif [[ $bytes -ge 1024 ]]; then
+        printf "%.1fKB" "$(echo "scale=1; $bytes/1024" | bc)"
+    else
+        printf "%dB" "$bytes"
+    fi
+}
+
+
+# =============================================================================
+# COMMAND: help
+# =============================================================================
+
+_ob_help() {
+    local W=51   # inner box width
+
+    # Top border
+    printf "\n%b┏" "${UI_BOX}"
+    printf "━%.0s" $(seq 1 $W)
+    printf "┓%b\n" "${NC}"
+
+    # Title row
+    local title="ob - Open Brain"
+    local title_pad=$(( (W - ${#title}) / 2 ))
+    local title_right=$(( W - ${#title} - title_pad ))
+    printf "%b┃%b%*s%b%s%b%*s%b┃%b\n" \
+        "${UI_BOX}" "${NC}" \
+        "$title_pad" "" \
+        "${_GRAD_5}" "$title" "${NC}" \
+        "$title_right" "" \
+        "${UI_BOX}" "${NC}"
+
+    # Bottom border
+    printf "%b┗" "${UI_BOX}"
+    printf "━%.0s" $(seq 1 $W)
+    printf "┛%b\n" "${NC}"
+
+    printf "\n"
+
+    # ---- ROUTING section ----
+    printf "  ROUTING\n"
+    printf "    %bopen brain <task>%b             Auto-detect intensity, launch pipeline\n" "${_GRAD_5}" "${NC}"
+    printf "    %bob auto-route <task>%b          Same as above (explicit)\n" "${NC}" "${NC}"
+    printf "    %bob run <task>%b                 Alias for auto-route\n" "${NC}" "${NC}"
+    printf "\n"
+
+    # ---- PIPELINE section ----
+    printf "  PIPELINE\n"
+    printf "    %bob pipeline --task \"...\" --intensity light|standard|full%b\n" "${NC}" "${NC}"
+    printf "    %bob pipeline --dry-run%b        Preview pipeline steps\n" "${NC}" "${NC}"
+    printf "    %bob pipeline --headless%b       Fully automated (no UI)\n" "${NC}" "${NC}"
+    printf "    %bob pipeline --from 3%b         Resume from step 3\n" "${NC}" "${NC}"
+    printf "\n"
+
+    # ---- KIMI section ----
+    printf "  %b%s KIMI%b\n" "${KIMI_COLOR}" "${KIMI_EMOJI}" "${NC}"
+    printf "    %bob kimi research%b             Deep research (swarm mode)\n" "${KIMI_COLOR}" "${NC}"
+    printf "    %bob kimi review%b               Code review\n" "${KIMI_COLOR}" "${NC}"
+    printf "    %bob kimi security%b             Security audit\n" "${KIMI_COLOR}" "${NC}"
+    printf "    %bob kimi report%b               Project report card\n" "${KIMI_COLOR}" "${NC}"
+    printf "\n"
+
+    # ---- GEMINI section ----
+    printf "  %b%s GEMINI%b\n" "${GEMINI_COLOR}" "${GEMINI_EMOJI}" "${NC}"
+    printf "    %bob gemini briefing%b           Morning briefing data\n" "${GEMINI_COLOR}" "${NC}"
+    printf "    %bob gemini email%b              Email triage\n" "${GEMINI_COLOR}" "${NC}"
+    printf "    %bob gemini drive%b              Drive search\n" "${GEMINI_COLOR}" "${NC}"
+    printf "    %bob gemini briefing --mode think%b   Use Deep Think mode\n" "${GEMINI_COLOR}" "${NC}"
+    printf "\n"
+
+    # ---- CODEX section ----
+    printf "  %b%s CODEX%b\n" "${CODEX_COLOR}" "${CODEX_EMOJI}" "${NC}"
+    printf "    %bob codex%b                     Stress test (final gate)\n" "${CODEX_COLOR}" "${NC}"
+    printf "\n"
+
+    # ---- TOOLS section ----
+    printf "  TOOLS\n"
+    printf "    %bob versions%b                  Show model registry + versions\n" "${UI_INFO}" "${NC}"
+    printf "    %bob update-check%b              Check for CLI updates\n" "${UI_INFO}" "${NC}"
+    printf "    %bob benchmark --task \"...\"%b   Multivariate test across models\n" "${UI_INFO}" "${NC}"
+    printf "\n"
+
+    printf "  %bob help%b                        This screen\n\n" "${UI_DIM}" "${NC}"
+}
+
+
+# =============================================================================
+# COMMAND: versions
+# =============================================================================
+
+_ob_versions() {
+    ob_spinner "Querying model versions..."
+
+    local raw
+    raw=$(ob_get_versions)
+
+    ob_spinner_stop
+
+    IFS='|' read -r kimi_v gemini_v claude_v codex_v <<< "$raw"
+
+    # Trim whitespace / newlines
+    kimi_v="${kimi_v//[$'\t\r\n']/ }"
+    gemini_v="${gemini_v//[$'\t\r\n']/ }"
+    claude_v="${claude_v//[$'\t\r\n']/ }"
+    codex_v="${codex_v//[$'\t\r\n']/ }"
+
+    # Extract bare version numbers where possible
+    _ver() {
+        local raw="$1"
+        # Grab first version-like token: vX.Y.Z or X.Y.Z
+        local v
+        v=$(printf "%s" "$raw" | grep -oE 'v?[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1)
+        printf "%s" "${v:-$raw}"
+    }
+
+    local kv gv cv codv
+    kv=$(_ver "$kimi_v")
+    gv=$(_ver "$gemini_v")
+    cv=$(_ver "$claude_v")
+    codv=$(_ver "$codex_v")
+
+    # Table dimensions
+    local W=51
+    local today
+    today=$(date '+%Y-%m-%d')
+
+    printf "\n%b┌─ Model Registry " "${UI_BOX}"
+    printf "─%.0s" $(seq 1 $(( W - 18 )))
+    printf "┐%b\n" "${NC}"
+
+    # Header row
+    printf "%b│%b  %-14s %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${UI_INFO}" \
+        "Tool" "Version" "Model" "Mode" \
+        "${UI_BOX}" "${NC}"
+
+    # Separator
+    printf "%b│%b  %-14s %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${UI_DIM}" \
+        "─────────────" "───────────" "───────────────────" "─────" \
+        "${UI_BOX}" "${NC}"
+
+    # Kimi row
+    printf "%b│%b  %b%-14s%b %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${NC}" \
+        "${KIMI_COLOR}" "${KIMI_EMOJI} Kimi" "${NC}" \
+        "${kv:-unknown}" "K2.5" "Swarm" \
+        "${UI_BOX}" "${NC}"
+
+    # Gemini row
+    printf "%b│%b  %b%-14s%b %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${NC}" \
+        "${GEMINI_COLOR}" "${GEMINI_EMOJI} Gemini" "${NC}" \
+        "${gv:-unknown}" "Auto (3.1P/2.5F)" "--" \
+        "${UI_BOX}" "${NC}"
+
+    # Opus row
+    printf "%b│%b  %b%-14s%b %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${NC}" \
+        "${OPUS_COLOR}" "${OPUS_EMOJI} Opus" "${NC}" \
+        "${cv:-unknown}" "claude-opus-4-6" "--" \
+        "${UI_BOX}" "${NC}"
+
+    # Sonnet row
+    printf "%b│%b  %b%-14s%b %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${NC}" \
+        "${SONNET_COLOR}" "${SONNET_EMOJI} Sonnet" "${NC}" \
+        "${cv:-unknown}" "claude-sonnet-4-6" "--" \
+        "${UI_BOX}" "${NC}"
+
+    # Codex row
+    printf "%b│%b  %b%-14s%b %-12s %-20s %-6s %b│%b\n" \
+        "${UI_BOX}" "${NC}" \
+        "${CODEX_COLOR}" "${CODEX_EMOJI} Codex" "${NC}" \
+        "${codv:-unknown}" "codex-mini-latest" "--" \
+        "${UI_BOX}" "${NC}"
+
+    printf "%b└" "${UI_BOX}"
+    printf "─%.0s" $(seq 1 $W)
+    printf "┘%b\n" "${NC}"
+
+    printf "%b  Last checked: %s%b\n\n" "${UI_DIM}" "$today" "${NC}"
+}
+
+
+# =============================================================================
+# COMMAND: update-check
+# =============================================================================
+
+_ob_update_check() {
+    ob_section "Update Check" "" "${UI_INFO}"
+    ob_check_updates
+    printf "\n"
+}
+
+
+# =============================================================================
+# COMMAND: pipeline
+# =============================================================================
+
+_ob_pipeline() {
+    local pipeline_script="${_OB_SCRIPT_DIR}/pipeline.sh"
+
+    # Pipeline script may not exist yet — warn but attempt
+    if [[ ! -f "$pipeline_script" ]]; then
+        printf "%b  ◦  Pipeline script not found at:%b %s\n" "${UI_INFO}" "${NC}" "$pipeline_script" >&2
+        printf "%b  ◦  Expected: scripts/pipeline.sh%b\n" "${UI_INFO}" "${NC}" >&2
+        exit 1
+    fi
+
+    exec bash "$pipeline_script" "$@"
+}
+
+
+# =============================================================================
+# COMMAND: kimi
+# =============================================================================
+
+_ob_kimi() {
+    local kimi_script="${_OB_SCRIPT_DIR}/kimi-agent.sh"
+    _ob_script_exists "$kimi_script"
+
+    local context="${1:-}"
+    if [[ -z "$context" ]]; then
+        printf "%b  ✘  Usage: ob kimi <research|review|security|report>%b\n" "${UI_FAIL}" "${NC}" >&2
+        exit 1
+    fi
+
+    case "$context" in
+        research|review|security|report)
+            shift || true
+            exec bash "$kimi_script" "$context" "$@"
+            ;;
+        *)
+            printf "%b  ✘  Unknown kimi context: %s%b\n" "${UI_FAIL}" "$context" "${NC}" >&2
+            printf "%b  ◦  Valid contexts: research, review, security, report%b\n" "${UI_INFO}" "${NC}" >&2
+            exit 1
+            ;;
+    esac
+}
+
+
+# =============================================================================
+# COMMAND: gemini
+# =============================================================================
+
+_ob_gemini() {
+    local gemini_script="${_OB_SCRIPT_DIR}/gemini-agent.sh"
+    _ob_script_exists "$gemini_script"
+
+    local context="${1:-}"
+    if [[ -z "$context" ]]; then
+        printf "%b  ✘  Usage: ob gemini <briefing|email|drive> [--mode think]%b\n" "${UI_FAIL}" "${NC}" >&2
+        exit 1
+    fi
+
+    case "$context" in
+        briefing|email|drive)
+            shift || true
+            exec bash "$gemini_script" "$context" "$@"
+            ;;
+        *)
+            printf "%b  ✘  Unknown gemini context: %s%b\n" "${UI_FAIL}" "$context" "${NC}" >&2
+            printf "%b  ◦  Valid contexts: briefing, email, drive%b\n" "${UI_INFO}" "${NC}" >&2
+            exit 1
+            ;;
+    esac
+}
+
+
+# =============================================================================
+# COMMAND: codex
+# =============================================================================
+
+_ob_codex() {
+    ob_section "Codex Stress Test" "${CODEX_EMOJI}" "${CODEX_COLOR}"
+
+    if ! command -v "$CODEX_CLI" &>/dev/null; then
+        ob_fail "codex not found at: ${CODEX_CLI}"
+        printf "%b  ◦  Install: npm install -g @openai/codex%b\n" "${UI_INFO}" "${NC}" >&2
+        exit 1
+    fi
+
+    ob_info "Running Codex final gate review..."
+    printf "\n"
+
+    exec "$CODEX_CLI" exec \
+        --sandbox read-only \
+        --full-auto \
+        --skip-git-repo-check \
+        "Review for bugs, logic errors, and security issues. Be a relentless reviewer." \
+        "$@"
+}
+
+
+# =============================================================================
+# COMMAND: benchmark
+# =============================================================================
+
+_ob_benchmark() {
+    # Parse --task flag
+    local task=""
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --task)
+                shift
+                _ob_require_arg "--task" "${1:-}"
+                task="$1"
+                shift
+                ;;
+            --task=*)
+                task="${1#--task=}"
+                shift
+                ;;
+            *)
+                printf "%b  ✘  Unknown flag: %s%b\n" "${UI_FAIL}" "$1" "${NC}" >&2
+                printf "%b  ◦  Usage: ob benchmark --task \"description\"%b\n" "${UI_INFO}" "${NC}" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    if [[ -z "$task" ]]; then
+        printf "%b  ✘  --task is required%b\n" "${UI_FAIL}" "${NC}" >&2
+        printf "%b  ◦  Usage: ob benchmark --task \"description\"%b\n" "${UI_INFO}" "${NC}" >&2
+        exit 1
+    fi
+
+    # Create benchmark directory
+    local bench_dir="/tmp/ob-benchmark-$(date '+%Y%m%d-%H%M%S')"
+    mkdir -p "$bench_dir"
+
+    ob_section "Benchmark" "⚡" "${OPUS_COLOR}"
+    ob_info "Task: ${task}"
+    ob_info "Output directory: ${bench_dir}"
+    printf "\n"
+
+    # Benchmark configurations
+    # Format: "label|emoji|color|runner_function"
+    local -a configs=(
+        "Kimi Thinking|${KIMI_EMOJI}|kimi|kimi-thinking"
+        "Kimi Swarm|${KIMI_EMOJI}|kimi|kimi-swarm"
+        "Gemini Standard|${GEMINI_EMOJI}|gemini|gemini-standard"
+        "Gemini Think|${GEMINI_EMOJI}|gemini|gemini-think"
+    )
+
+    # Results arrays
+    local -a res_label res_time res_size res_findings
+
+    local i=0
+    for cfg in "${configs[@]}"; do
+        IFS='|' read -r label emoji colorkey runner <<< "$cfg"
+
+        local outfile="${bench_dir}/${runner}.md"
+        local color
+
+        case "$colorkey" in
+            kimi)   color="${KIMI_COLOR}" ;;
+            gemini) color="${GEMINI_COLOR}" ;;
+            *)      color="${UI_INFO}" ;;
+        esac
+
+        printf "  %b%s %s%b  Running...\n" "$color" "$emoji" "$label" "${NC}"
+
+        local t_start
+        t_start=$(date +%s)
+
+        # Run the appropriate tool, capturing output
+        local exit_code=0
+        case "$runner" in
+            kimi-thinking)
+                if command -v "$KIMI_CLI" &>/dev/null; then
+                    "$KIMI_CLI" --mode thinking "$task" > "$outfile" 2>&1 || exit_code=$?
+                else
+                    printf "### Finding: kimi CLI not available\n" > "$outfile"
+                fi
+                ;;
+            kimi-swarm)
+                if command -v "$KIMI_CLI" &>/dev/null; then
+                    "$KIMI_CLI" --mode swarm "$task" > "$outfile" 2>&1 || exit_code=$?
+                else
+                    printf "### Finding: kimi CLI not available\n" > "$outfile"
+                fi
+                ;;
+            gemini-standard)
+                if command -v "$GEMINI_CLI" &>/dev/null; then
+                    "$GEMINI_CLI" "$task" > "$outfile" 2>&1 || exit_code=$?
+                else
+                    printf "### Finding: gemini CLI not available\n" > "$outfile"
+                fi
+                ;;
+            gemini-think)
+                if command -v "$GEMINI_CLI" &>/dev/null; then
+                    "$GEMINI_CLI" --model "$GEMINI_THINK_MODEL" --thinking high "$task" > "$outfile" 2>&1 || exit_code=$?
+                else
+                    printf "### Finding: gemini CLI not available\n" > "$outfile"
+                fi
+                ;;
+        esac
+
+        local elapsed
+        elapsed=$(_ob_elapsed "$t_start")
+        local size
+        size=$(_ob_filesize_human "$outfile")
+        local findings
+        findings=$(_ob_count_findings "$outfile")
+
+        res_label[$i]="$emoji $label"
+        res_time[$i]="${elapsed}s"
+        res_size[$i]="$size"
+        res_findings[$i]="$findings findings"
+
+        # Update status line
+        printf "\033[1A\033[2K"   # move up, clear line
+        printf "  %b%s %s%b  %b✔%b  ${elapsed}s  ${size}  ${findings} findings\n" \
+            "$color" "$emoji" "$label" "${NC}" "${UI_SUCCESS}" "${NC}"
+
+        (( i++ )) || true
+    done
+
+    printf "\n"
+
+    # ---- Results table ----
+    local W=51
+
+    printf "%b┌─ Benchmark Results " "${UI_BOX}"
+    printf "─%.0s" $(seq 1 $(( W - 20 )))
+    printf "┐%b\n" "${NC}"
+
+    printf "%b│%b  %-22s %-8s %-9s %-12s %b│%b\n" \
+        "${UI_BOX}" "${UI_INFO}" \
+        "Config" "Time" "Output" "Findings" \
+        "${UI_BOX}" "${NC}"
+
+    printf "%b│%b  %-22s %-8s %-9s %-12s %b│%b\n" \
+        "${UI_BOX}" "${UI_DIM}" \
+        "─────────────────────" "───────" "────────" "───────────" \
+        "${UI_BOX}" "${NC}"
+
+    local count=${#res_label[@]}
+    for (( j=0; j<count; j++ )); do
+        local lbl="${res_label[$j]}"
+        local col
+        if [[ "$lbl" == *"${KIMI_EMOJI}"* ]] || [[ "$lbl" == *"Kimi"* ]]; then
+            col="${KIMI_COLOR}"
+        else
+            col="${GEMINI_COLOR}"
+        fi
+
+        printf "%b│%b  %b%-22s%b %-8s %-9s %-12s %b│%b\n" \
+            "${UI_BOX}" "${NC}" \
+            "$col" "$lbl" "${NC}" \
+            "${res_time[$j]}" "${res_size[$j]}" "${res_findings[$j]}" \
+            "${UI_BOX}" "${NC}"
+    done
+
+    printf "%b└" "${UI_BOX}"
+    printf "─%.0s" $(seq 1 $W)
+    printf "┘%b\n" "${NC}"
+
+    # ---- Winners ----
+    # Speed winner: lowest time
+    local fastest_idx=0
+    local fastest_secs=99999
+    for (( j=0; j<count; j++ )); do
+        local t="${res_time[$j]%s}"
+        if [[ $t -lt $fastest_secs ]]; then
+            fastest_secs=$t
+            fastest_idx=$j
+        fi
+    done
+
+    # Depth winner: most findings
+    local deepest_idx=0
+    local most_findings=0
+    for (( j=0; j<count; j++ )); do
+        local f="${res_findings[$j]% findings}"
+        if [[ $f -gt $most_findings ]]; then
+            most_findings=$f
+            deepest_idx=$j
+        fi
+    done
+
+    printf "\n"
+    printf "  %bWinner (speed):%b  %s (%s)\n" \
+        "${UI_SUCCESS}" "${NC}" \
+        "${res_label[$fastest_idx]}" "${res_time[$fastest_idx]}"
+
+    printf "  %bWinner (depth):%b  %s (%s)\n" \
+        "${KIMI_COLOR}" "${NC}" \
+        "${res_label[$deepest_idx]}" "${res_findings[$deepest_idx]}"
+
+    printf "\n"
+    printf "  %bResults:%b %s\n\n" "${UI_DIM}" "${NC}" "$bench_dir"
+}
+
+
+# =============================================================================
+# COMMAND: auto-route (intelligent intensity detection)
+# =============================================================================
+
+_ob_detect_intensity() {
+    local task="$1"
+    local lower
+    lower=$(printf "%s" "$task" | tr '[:upper:]' '[:lower:]')
+
+    # Light: simple fixes, small changes
+    if printf "%s" "$lower" | grep -qE '\b(fix|typo|patch|tweak|rename|bump|small|minor|quick|hotfix|correct spelling|add comment|remove comment|update version)\b'; then
+        printf "light"
+        return
+    fi
+
+    # Full: architecture, research, big changes
+    if printf "%s" "$lower" | grep -qE '\b(redesign|architect|overhaul|rethink|migrate|new system|research|investigate|audit|security review|refactor everything|rewrite|deep dive|full review|from scratch)\b'; then
+        printf "full"
+        return
+    fi
+
+    # Standard: everything else
+    printf "standard"
+}
+
+_ob_auto_route() {
+    local task="$*"
+
+    if [[ -z "$task" ]]; then
+        printf "%b  ✘  No task provided%b\n" "${UI_FAIL}" "${NC}" >&2
+        printf "%b  ◦  Usage: ob auto-route \"description of what to do\"%b\n" "${UI_INFO}" "${NC}" >&2
+        printf "%b  ◦  Or:    open brain description of what to do%b\n" "${UI_INFO}" "${NC}" >&2
+        exit 1
+    fi
+
+    local intensity
+    intensity=$(_ob_detect_intensity "$task")
+
+    # Show detected routing
+    local intensity_color intensity_label
+    case "$intensity" in
+        light)    intensity_color="${SONNET_COLOR}"; intensity_label="LIGHT (build + correct + gate)" ;;
+        standard) intensity_color="${OPUS_COLOR}";   intensity_label="STANDARD (plan + build + correct + gate)" ;;
+        full)     intensity_color="${KIMI_COLOR}";    intensity_label="FULL (research + build + validate + gate)" ;;
+    esac
+
+    printf "\n%b  TASK:%b %s\n" "${UI_INFO}" "${NC}" "$task"
+    printf "%b  INTENSITY:%b %b%s%b\n\n" "${UI_INFO}" "${NC}" "$intensity_color" "$intensity_label" "${NC}"
+
+    exec bash "${_OB_SCRIPT_DIR}/pipeline.sh" --task "$task" --intensity "$intensity"
+}
+
+
+# =============================================================================
+# MAIN DISPATCH
+# =============================================================================
+
+main() {
+    local cmd="${1:-help}"
+    shift || true
+
+    # Boot sound on any command except help
+    if [[ "$cmd" != "help" && "$cmd" != "--help" && "$cmd" != "-h" ]]; then
+        ob_boot_sound
+    fi
+
+    case "$cmd" in
+        pipeline)
+            _ob_pipeline "$@"
+            ;;
+        auto-route|run|do)
+            _ob_auto_route "$@"
+            ;;
+        kimi)
+            _ob_kimi "$@"
+            ;;
+        gemini)
+            _ob_gemini "$@"
+            ;;
+        codex)
+            _ob_codex "$@"
+            ;;
+        versions)
+            _ob_versions
+            ;;
+        update-check)
+            _ob_update_check
+            ;;
+        benchmark)
+            _ob_benchmark "$@"
+            ;;
+        help|--help|-h)
+            _ob_help
+            ;;
+        *)
+            # Unknown command: treat the whole thing as a natural language task
+            _ob_auto_route "$cmd" "$@"
+            ;;
+    esac
+}
+
+main "$@"
