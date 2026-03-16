@@ -1,128 +1,376 @@
 # Open Brain — Agent Instructions
 
+Last Updated: March 16, 2026
+
 ## What This Is
 
-Open Brain is a personal and team knowledge capture system. The best agent is a markdown file routed through folders. This file is that agent.
+Open Brain is a personal and team knowledge capture system. It now runs within the **Kimi Code** architecture layer — Claude Code-inspired enhancements on top of Kimi CLI.
+
+This file is the agent routing instructions.
+
+---
+
+## Architecture Context
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        KIMI CODE SYSTEM                                │
+│                    (Claude Code + Kimi Integration)                    │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
+│  │  Session     │  │  Cost        │  │  Plan/Act/   │  │  AI Team   │ │
+│  │  Management  │  │  Tracking    │  │  Review Modes│  │  Pipelines │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └─────┬──────┘ │
+│         │                 │                  │                │        │
+│         └─────────────────┴──────────────────┴────────────────┘        │
+│                                    │                                   │
+│                                    ▼                                   │
+│                         ┌─────────────────┐                            │
+│                         │  Kimi CLI       │                            │
+│                         │  (base layer)   │                            │
+│                         └────────┬────────┘                            │
+└──────────────────────────────────┼─────────────────────────────────────┘
+                                   │
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                      OPEN BRAIN PROJECT                                │
+│                   (One project within Kimi Code)                       │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
+│  │  Knowledge   │  │  Database    │  │  Morning     │  │  Reclaim   │ │
+│  │  Capture     │  │  Schema      │  │  Briefing    │  │  Scheduler │ │
+│  │  (19 tmpl)   │  │  (6 tables)  │  │  Dashboard   │  │            │ │
+│  └──────────────┘  └──────────────┘  └──────────────┘  └────────────┘ │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
 
 ## Before Doing Anything
 
-1. Read `ROADMAP.md` — know what phase we're in, what's done, what's next
-2. Read project memory at `~/.claude/projects/-Users-kevfreeney-OPENBRAIN-openBrain/memory/MEMORY.md`
-3. Check the folder structure below to understand where things live
+1. **Read `ROADMAP.md`** — know what phase we're in, what's done, what's next
+2. **Read project memory** at `~/.claude/projects/-Users-kevfreeney-OPENBRAIN-openBrain/memory/MEMORY.md`
+3. **Check Kimi Code context** — `~/.kimi-code/sessions/` for active sessions
+4. **Check the folder structure** below to understand where things live
+
+---
 
 ## Folder Structure
 
 ```
-openBrain/
-  CLAUDE.md           <- You are here. Agent routing file.
-  ROADMAP.md          <- Living roadmap. 8 phases, checkboxes, source locations.
-  HANDOVER.md         <- Static reference. Architecture, deploy commands, template tables.
-
-~/supabase/functions/
-  ingest-thought/     <- Slack capture pipeline (webhook -> classify -> embed -> store)
-  meeting-notes/      <- Transcript extraction pipeline (Apps Script -> extract -> embed -> store)
+openBrain/                          <- You are here
+  CLAUDE.md                         <- This file. Agent routing.
+  ROADMAP.md                        <- Living roadmap. 8+ phases.
+  HANDOVER.md                       <- Complete architecture reference.
+  RECLAIM_INTEGRATION.md            <- Reclaim.ai integration guide.
+  apps/my-app/                      <- Morning Briefing Dashboard
+  
+~/supabase/functions/               <- Edge Functions
+  ingest-thought/                   <- Slack capture pipeline
+  meeting-notes/                    <- Transcript extraction
+  schedule-actions/                 <- Reclaim/GCal/Todoist integration
+  
+~/supabase/migrations/              <- Database migrations
+  001_core_schema.sql               <- Document types, access control
+  002_vector_search.sql             <- pgvector, similarity search
+  003_data_integrity.sql            <- Triggers, audit, validation
+  004_scheduled_jobs.sql            <- pg_cron, briefings, reviews
+  005_api_functions.sql             <- API functions for Edge Functions
+  006_claude_code_integration.sql   <- Sessions, cost tracking, plans
+  
+~/.kimi-code/                       <- Kimi Code system (NEW)
+  bin/kc                            <- Main CLI command
+  config/system.toml                <- Configuration, model pricing
+  lib/pipelines/                    <- AI Team pipelines
+  skills/                           <- Reusable skill prompts
+  sessions/                         <- Session storage
 ```
+
+---
 
 ## System Architecture
 
-- **Supabase**: project jeuxslbhjubxmhtzpvqf (database, Edge Functions, auth)
-- **OpenRouter**: gpt-4o-mini (classification), text-embedding-3-small (vectors)
-- **Slack**: #log channel webhook -> ingest-thought
-- **Google Apps Script**: Meet Recordings -> meeting-notes Edge Function -> shared Drive folder
-- **MCP Tools**: search_thoughts, list_thoughts, capture_thought, thought_stats
+### Core Infrastructure
 
-## Template System (19 templates, 3 layers)
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **Database** | Supabase (PostgreSQL) | Primary data store with RLS |
+| **Edge Functions** | Deno/TypeScript | API endpoints, webhooks |
+| **Embeddings** | OpenRouter + text-embedding-3-small | Vector search |
+| **Classification** | OpenRouter + gpt-4o-mini | Template detection |
+| **Auth** | Supabase + MCP keys | Row-level security |
+
+### Integration Points
+
+| Service | Integration | Status |
+|---------|-------------|--------|
+| **Slack** | #log channel webhook → ingest-thought | ✅ Active |
+| **Google Meet** | Gemini transcripts → Apps Script → meeting-notes | ✅ Active |
+| **Reclaim.ai** | 3 approaches (GCal/API/Todoist) | ✅ Active |
+| **OpenWeather** | Dublin weather API | ✅ Active |
+| **Yahoo Finance** | Clean energy ETF prices | ✅ Active |
+| **Good News** | RSS feed | ✅ Active |
+
+---
+
+## Kimi Code Integration (Claude Code Features)
+
+### What's New
+
+Kimi Code wraps Kimi CLI with Claude Code-inspired features. Open Brain is one project within this system.
+
+### Available Commands
+
+```bash
+# Session Management (NEW)
+kc                              # Start new session
+kc sessions                     # List recent sessions
+kc resume <id>                  # Resume session
+kc cost                         # Show cost & usage stats
+kc digest                       # Weekly summary
+
+# Plan Mode (equivalent to Claude Code /plan)
+kc plan "Feature description"   # Create implementation plan
+kc approve                      # Approve plan, switch to act
+kc act                          # Switch to act mode
+
+# Review Mode
+code review                     # Analyze without modifying
+
+# AI Team Pipelines (NEW)
+kc pipeline research-decide-build-correct   # Full 7-step pipeline
+kc pipeline quick-fix                        # Fast 2-step fix
+kc pipeline security-audit                   # Security review
+
+# Skills (NEW)
+kc skill brainstorm             # Generate ideas
+kc skill refactor <file>        # Safe refactoring guide
+
+# Open Brain Integration
+kc remember "Insight"           # Save to Open Brain
+kc search "query"               # Search Open Brain
+```
+
+### Cost Tracking
+
+Automatic cost tracking across all models:
+
+| Model | Input/1K | Output/1K | Used In |
+|-------|----------|-----------|---------|
+| Kimi 2.5 | Free | Free | Research, validation |
+| Claude Opus 4 | $0.015 | $0.075 | Decisions, correction |
+| Claude Sonnet 4 | $0.003 | $0.015 | Implementation |
+| Gemini 2.5 Pro | $0.00125 | $0.01 | Google context |
+
+**Check costs:** `kc cost` or `kc digest`
+
+### AI Team Pipeline B
+
+The full 7-step pipeline:
+
+```
+Step 1a: Kimi 2.5 ─────────┐
+           Deep research    ├── Parallel
+Step 1b: Gemini 2.5 Pro ───┤   Google context
+                            │
+Step 2: Claude Opus 4 ◄────┘   Architecture decisions
+              │
+Step 3: Claude Sonnet 4        Implementation
+              │
+Step 4: Claude Opus 4          Review & correction
+              │
+Step 5: Kimi 2.5               Validation
+              │
+Step 6: Gemini 2.5 Pro         Integration check
+              │
+Step 7: Codex (OpenAI)         Stress test (final gate)
+```
+
+**Run it:**
+```bash
+kc pipeline research-decide-build-correct
+```
+
+---
+
+## Template System (19 Templates, 3 Layers)
 
 Leading keyword triggers classification. Both Edge Functions know all 19.
 
-- **Team Core (8)**: Decision, Risk, Milestone, Spec, Meeting Debrief, Person Note, Stakeholder, Sent
-- **Role (6)**: Budget, Invoice, Funding, Legal, Compliance, Contract
-- **Personal (5)**: Insight, AI Save, Nutrition, Health, Home
+### Layer 1: Team Core (8)
+
+| Template | Keyword | Type | Emoji |
+|----------|---------|------|-------|
+| Decision | `Decision:` | task | 🎯 |
+| Risk | `Risk:` | task | ⚠️ |
+| Milestone | `Milestone:` | observation | 🏁 |
+| Spec | `Spec:` | reference | 🔧 |
+| Meeting Debrief | `Meeting with` | observation | 📋 |
+| Person Note | `[Name] —` | person_note | 👤 |
+| Stakeholder | `Stakeholder:` | person_note | 🤝 |
+| Sent | `Sent:` | task | 📤 |
+
+### Layer 2: Role (6)
+
+| Template | Keyword | Type | Primary User |
+|----------|---------|------|-------------|
+| Budget | `Budget:` | observation | Laura |
+| Invoice | `Invoice:` | task | Laura / Kev |
+| Funding | `Funding:` | observation | Laura / Kev |
+| Legal | `Legal:` | observation | Laura / Kev |
+| Compliance | `Compliance:` | task | Anyone |
+| Contract | `Contract:` | reference | Laura |
+
+### Layer 3: Personal (5)
+
+| Template | Keyword | Type | Notes |
+|----------|---------|------|-------|
+| Insight | `Insight:` | idea | Kev uses heavily |
+| AI Save | `Saving from` | reference | AI outputs |
+| Nutrition | `Ate:` | observation | Health tracking |
+| Health | `Health:` | observation | Wellbeing |
+| Home | `Home:` | observation | Personal tasks |
+
+---
 
 ## Deploy
+
+### Edge Functions
 
 ```bash
 supabase functions deploy ingest-thought
 supabase functions deploy meeting-notes
+supabase functions deploy schedule-actions
 ```
 
-## AI Team
+### Database Migrations
 
-Five models. Pipeline B: Parallel Scout with correction loop.
+Apply in order:
 
-```
-Kimi deep research ──────┐
-                         ├──> Opus decides ──> Sonnet builds ──> Opus corrects
-Gemini gathers Google ───┘
-                         ──> Kimi validates (against original research)
-                         ──> Gemini checks Google integration
-                         ──> Codex stress tests at build
-```
-
-| Step | Model | Job | Cost |
-|------|-------|-----|------|
-| 1a. Code research | Kimi 2.5 | Deep research, codebase analysis, swarm mode | Low |
-| 1b. Google research | Gemini CLI + Kev | Gather Calendar, Gmail, Drive context | Free |
-| 2. Decision | Claude Opus 4.6 | Architecture, roadmap, master prompts (with full context from 1a+1b) | High |
-| 3. Implementation | Claude Sonnet 4.6 | Fills in code, docs, config from Opus plan | Medium |
-| 4. Correction | Claude Opus 4.6 | Reviews Sonnet output, fixes logic, ensures quality | High |
-| 5. Validation | Kimi 2.5 | Validates against its original research. Did we miss anything? | Low |
-| 6. Integration check | Gemini CLI + Kev | How does the output fit into Google Workspace? | Free |
-| 7. Build gate | Codex (OpenAI) | Stress tests, error analysis, catches mistakes | High |
-
-**How to use in Claude Code:**
-- Steps 1a + 1b run in parallel (Kimi terminal + Gemini terminal)
-- Opus (`/model opus`) for steps 2 and 4. Decides, then corrects.
-- Sonnet (`/model sonnet`) for step 3. Does all the heavy lifting.
-- Subagents default to Sonnet via `model: "sonnet"` parameter.
-- Steps 5 + 6 can also run in parallel (Kimi terminal + Gemini terminal).
-
-**Quick commands (`ob` is on PATH):**
 ```bash
-ob pipeline                    # Full Pipeline B (all 7 steps)
-ob pipeline --dry-run          # Preview steps, no execution
-ob pipeline --headless         # Fully automated via claude -p
-ob pipeline --from 3           # Resume from step N
-
-ob kimi research               # Deep research (swarm mode)
-ob kimi review                 # Code review
-ob kimi security               # Security audit
-ob kimi report                 # Project report card
-
-ob gemini briefing             # Morning briefing data
-ob gemini email                # Email triage
-ob gemini drive                # Drive search
-ob gemini briefing --mode think   # Use Gemini Deep Think
-
-ob codex                       # Codex stress test (final gate)
-
-ob versions                    # Show model registry + CLI versions
-ob update-check                # Check for CLI updates
-ob benchmark --task "..."      # Multivariate test across models
-ob help                        # Colour-coded help screen
+# If you have psql access
+psql $SUPABASE_DB_URL -f ~/supabase/migrations/001_core_schema.sql
+psql $SUPABASE_DB_URL -f ~/supabase/migrations/002_vector_search.sql
+psql $SUPABASE_DB_URL -f ~/supabase/migrations/003_data_integrity.sql
+psql $SUPABASE_DB_URL -f ~/supabase/migrations/004_scheduled_jobs.sql
+psql $SUPABASE_DB_URL -f ~/supabase/migrations/005_api_functions.sql
+psql $SUPABASE_DB_URL -f ~/supabase/migrations/006_claude_code_integration.sql
 ```
 
-**Manual mode (without `ob`):**
+Or use Supabase CLI:
 ```bash
-# Step 1a + 1b: Research (run in parallel, two terminal tabs)
-./scripts/kimi-agent.sh research          # Kimi: deep codebase analysis
-./scripts/gemini-agent.sh briefing        # Gemini: Google Workspace context
-
-# Step 2: Opus decides (switch to /model opus in Claude Code)
-# Step 3: Sonnet builds (switch to /model sonnet in Claude Code)
-# Step 4: Opus corrects (switch to /model opus in Claude Code)
-
-# Step 5 + 6: Validation (parallel)
-./scripts/kimi-agent.sh review            # Kimi validates against research
-./scripts/gemini-agent.sh drive           # Gemini checks Google integration
-
-# Step 7: Codex stress tests at build
-ob codex
+supabase db push
 ```
+
+---
+
+## Working with Kimi Code
+
+### Starting a Session
+
+```bash
+# Start fresh session
+kc
+
+# Or with context
+kc start
+
+# Check current session
+kc cost
+```
+
+### Plan Mode Workflow
+
+```bash
+# Create a plan
+kc plan "Build Phase 5 To-Do integration"
+
+# Edit the generated plan
+vim ~/.kimi-code/sessions/$(kc sessions | head -2 | tail -1 | awk '{print $1}')/plan.md
+
+# Approve and execute
+kc approve
+# Now in act mode - implement the plan
+```
+
+### Using AI Team Pipeline
+
+```bash
+# Full pipeline for major features
+kc pipeline research-decide-build-correct
+
+# Quick fix for small issues
+kc pipeline quick-fix
+
+# Security review
+kc pipeline security-audit
+```
+
+### Capturing to Open Brain
+
+While working in any session:
+
+```bash
+# Save an insight
+kc remember "Key insight: Use materialized views for search performance"
+
+# Search previous insights
+kc search "materialized views"
+```
+
+---
+
+## Legacy Commands (still work)
+
+```bash
+# Original pipeline launcher
+ob pipeline                    # Full Pipeline B
+ob kimi research               # Kimi deep research
+ob gemini briefing             # Gemini context gathering
+ob codex                       # Codex stress test
+
+# Direct scripts
+./scripts/kimi-agent.sh research
+./scripts/gemini-agent.sh briefing
+```
+
+---
 
 ## Rules
 
-- Update ROADMAP.md checkboxes as work completes
-- Update project memory when decisions or phase changes happen
-- Every Edge Function change gets deployed, Codex-reviewed, and Kimi-reviewed before phase close
-- Do not invent. Do not over-extract. Short sentences. No em dashes.
+1. **Update ROADMAP.md** checkboxes as work completes
+2. **Update project memory** when decisions or phase changes happen
+3. **Use Kimi Code sessions** for all work (`kc` not just `kimi`)
+4. **Track costs** — run `kc cost` before long operations
+5. **Use plan mode** for multi-step features
+6. **Every Edge Function change** gets deployed, reviewed, and tested
+7. **Do not invent. Do not over-extract.** Short sentences. No em dashes.
+
+---
+
+## Quick Reference
+
+| Task | Command |
+|------|---------|
+| Start working | `kc` |
+| Check costs | `kc cost` |
+| Create plan | `kc plan "title"` |
+| Approve plan | `kc approve` |
+| Run pipeline | `kc pipeline research-decide-build-correct` |
+| Save thought | `kc remember "text"` |
+| Search thoughts | `kc search "query"` |
+| Weekly summary | `kc digest` |
+| Deploy function | `supabase functions deploy <name>` |
+| Apply migration | `psql $DB -f migrations/00X_*.sql` |
+
+---
+
+## Help
+
+- **Kimi Code help:** `kc help`
+- **This project:** See `HANDOVER.md` for complete architecture
+- **Reclaim integration:** See `RECLAIM_INTEGRATION.md`
+- **Database schema:** See migration files in `~/supabase/migrations/`
