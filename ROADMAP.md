@@ -83,20 +83,24 @@ Rolling out Open Brain to idirnet core team.
 
 ---
 
-## Phase 4: Morning Briefing Dashboard (NEXT)
+## Phase 4: Morning Briefing Dashboard (IN PROGRESS)
 
 Single web page, daily summary, phone-friendly.
 
-- [ ] Scaffold Next.js app on Vercel
-- [ ] Supabase query: yesterday's captures, open action items, people context
+- [x] Scaffold Next.js app on Vercel
+- [x] Supabase query: yesterday's captures, open action items, people context
 - [ ] Gemini Gem: "Morning Brief" pulls today's calendar + unread priority emails + recent Drive activity
 - [ ] Gemini output feeds into briefing page (replaces raw Google Calendar API calls)
-- [ ] OpenWeather API: Dublin weather
-- [ ] Positive news feed (Good News Network RSS or similar)
-- [ ] Renewable energy tickers (Yahoo Finance API: ICLN, TAN)
-- [ ] Render all on one page, optimised for mobile
+- [x] OpenWeather API: Dublin weather
+- [x] Positive news feed (Good News Network RSS or similar)
+- [x] Renewable energy tickers (Yahoo Finance API: ICLN, TAN, PBW, QCLN)
+- [x] Render all on one page, optimised for mobile
 - [ ] Scheduled Edge Function: 8am Slack DM with briefing summary
 - [ ] Review and deploy
+
+**Progress:** Core dashboard built. Remaining: Gemini integration, scheduled Slack DM.
+
+**Location:** `~/OPENBRAIN/openBrain/apps/my-app/`
 
 **Stack:** Next.js on Vercel, Supabase client, Gemini Gem (Calendar + Gmail + Drive), OpenWeather, Yahoo Finance
 
