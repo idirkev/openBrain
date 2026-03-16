@@ -17,6 +17,8 @@ Core capture and classification pipeline.
 - [x] MCP tools connected (search_thoughts, list_thoughts, capture_thought, thought_stats)
 - [x] 120+ thoughts captured across all types
 - [x] Claude Code integration via MCP
+- [x] Git repo initialised at ~/OPENBRAIN/openBrain/
+- [x] CLAUDE.md agent routing file in project root
 
 **Source files:** ~/supabase/functions/ingest-thought/index.ts
 
@@ -56,6 +58,8 @@ Gemini transcripts auto-processed into structured chunks.
 - [x] Needs deploy: `supabase functions deploy meeting-notes`
 - [x] 13 existing transcripts in source folder ready for first automated run
 
+**Google Apps Script setup:** Standalone script with time-driven trigger (every 15 min). No deployment type needed. Just add trigger at script.google.com.
+
 **Google Drive:**
 - Source: 1DUDxC91yfTxseMSBHlk_EpIhyxpdVeC1 (My Drive > Meet Recordings)
 - Output: 1vMbn6SLMLxe7YYUNabhXtz5aqFsEu2BC (Team Drive > 00_meetingNotes > Open Brain Meeting Notes)
@@ -70,7 +74,7 @@ Rolling out Open Brain to idirnet core team.
 
 - [x] Kris email sent with full 19-template guide + Apps Script + setup instructions
 - [ ] Kris provides his Gemini folder ID
-- [ ] Kris sets up his own Apps Script instance
+- [ ] Kris sets up his own Apps Script instance (standalone, time-driven trigger, every 15 min)
 - [ ] Kris tests Slack capture with template keywords
 - [ ] Laura onboarding (focus: Finance + Compliance templates)
 - [ ] Jochem onboarding (focus: Stakeholder + Sent templates)
@@ -91,6 +95,7 @@ Single web page, daily summary, phone-friendly.
 - [ ] Renewable energy tickers (Yahoo Finance API: ICLN, TAN)
 - [ ] Render all on one page, optimised for mobile
 - [ ] Scheduled Edge Function: 8am Slack DM with briefing summary
+- [ ] Codex review against dashboard code
 - [ ] Test and deploy
 
 **Stack:** Next.js on Vercel, Supabase client, Google Calendar API, OpenWeather, Yahoo Finance
@@ -106,6 +111,7 @@ Action items from captures auto-populate structured lists.
 - [ ] Auto-populate from thoughts with action_items in metadata
 - [ ] Morning briefing displays both lists
 - [ ] Google Calendar bidirectional sync via scheduled Edge Function
+- [ ] Codex review against sync logic
 
 ---
 
@@ -120,15 +126,35 @@ Capture pattern for health goals.
 
 ---
 
-## Phase 7: Email Parsing
+## Phase 7: Gmail Parsing (every 15 min)
 
-Forward emails to Open Brain for automatic extraction.
+Automated inbox scanning for action items, deadlines, and correspondence.
 
-- [ ] Create email-ingest Edge Function endpoint
-- [ ] Forward key emails to dedicated address (notetaker@idirnet.com)
-- [ ] Extract action items, deadlines, people
-- [ ] Auto-populate to-do lists
-- [ ] Integration with meeting-notes pipeline for emailed transcripts
+- [ ] Create gmail-ingest Google Apps Script (reads inbox every 15 min)
+- [ ] Scan for: emails needing replies, deadlines, deliverables, dates, action items
+- [ ] Track: inbound (received), outbound (sent), awaiting reply
+- [ ] Send extracted items to new email-ingest Edge Function
+- [ ] Edge Function classifies using templates: Sent, Stakeholder, Decision, Compliance, Contract
+- [ ] Create `email_items` table in Supabase (from, to, subject, action, due date, status)
+- [ ] Mark processed emails with Gmail label "OB-processed" to prevent duplicates
+- [ ] Morning briefing includes: emails needing reply, overdue responses, upcoming deadlines
+- [ ] Codex review against email parsing logic
+
+**Architecture:**
+```
+Gmail (kev@idirnet.com)
+    |
+    v (Google Apps Script, every 15 min)
+Supabase Edge Function: email-ingest
+    |
+    v (classify, extract, embed)
+Supabase: thoughts table + email_items table
+    |
+    v
+Morning briefing shows email status
+```
+
+**Source files:** Google Apps Script at script.google.com, ~/supabase/functions/email-ingest/index.ts
 
 ---
 
@@ -141,16 +167,45 @@ Scheduled summary of the week's captures.
 - [ ] Generates structured weekly review
 - [ ] Posts to Slack or sends via email
 - [ ] Highlights: open action items, unresolved risks, upcoming deadlines
+- [ ] Codex review against review generation logic
 
 ---
 
-## Deploy Checklist (pending)
+## Deploy Checklist
 
-Run these in terminal to push current updates live:
-
+### Pending now
 ```bash
 supabase functions deploy ingest-thought
 supabase functions deploy meeting-notes
+```
+
+### After each phase build
+```bash
+# Deploy the new function
+supabase functions deploy [function-name]
+
+# Codex review (requires OpenAI API key or ChatGPT Plus/Pro)
+codex exec --sandbox read-only \
+  --full-auto \
+  --skip-git-repo-check \
+  "Review for bugs and logic errors" 2>/dev/null
+
+# Commit
+git add -A && git commit -m "Phase N: description"
+```
+
+### Codex CLI setup
+Current state: authenticated via ChatGPT free plan (kev@idirnet.com). Free plan blocks all exec models.
+
+Fix option A (API key):
+```bash
+export OPENAI_API_KEY="sk-..."
+```
+
+Fix option B (upgrade ChatGPT, then re-auth):
+```bash
+codex auth logout
+codex auth login
 ```
 
 ---
@@ -161,6 +216,8 @@ supabase functions deploy meeting-notes
 |------|----------|
 | Supabase dashboard | https://supabase.com/dashboard/project/jeuxslbhjubxmhtzpvqf/functions |
 | Local Edge Functions | ~/supabase/functions/ |
-| Google Apps Script | script.google.com ("Open Brain Meeting Notes") |
+| Google Apps Script (meetings) | script.google.com ("Open Brain Meeting Notes") |
+| Google Apps Script (Gmail) | script.google.com ("Open Brain Gmail Ingest") — Phase 7 |
 | Project memory | ~/.claude/projects/-Users-kevfreeney-OPENBRAIN-openBrain/memory/ |
+| Agent routing | ~/OPENBRAIN/openBrain/CLAUDE.md |
 | This roadmap | ~/OPENBRAIN/openBrain/ROADMAP.md |
