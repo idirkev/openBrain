@@ -1,0 +1,25 @@
+{
+  "name": "openbrain-migration",
+  "version": "1.0.0",
+  "description": "Migration scripts for Open Brain document system",
+  "type": "module",
+  "scripts": {
+    "export": "tsx export-data.ts",
+    "export:decisions": "tsx export-data.ts --template Decision --output decisions.json",
+    "export:meetings": "tsx export-data.ts --template 'Meeting Debrief' --output meetings.json",
+    "export:insights": "tsx export-data.ts --template Insight --output insights.json",
+    "transform": "tsx transform-to-markdown.ts",
+    "transform:decisions": "tsx transform-to-markdown.ts --input decisions.json --output-dir ../../documents/20-permanent",
+    "validate": "tsx validate-links.ts",
+    "sync:git-to-db": "tsx sync-to-database.ts",
+    "full:migrate-decisions": "npm run export:decisions && npm run transform:decisions && npm run validate"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.10",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}

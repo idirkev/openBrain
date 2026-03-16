@@ -4,6 +4,25 @@ Last Updated: March 16, 2026
 
 ---
 
+## Quick Reference
+
+| Resource | Location |
+|----------|----------|
+| **This File** | System overview, architecture, commands |
+| `ROADMAP.md` | All 15 phases, **current checkpoint**, next steps |
+| `PROGRESS_LOG.md` | **Day-by-day advancement tracker** — sequential progress |
+| `CLAUDE_CODE_PROMPT.md` | **Copy-paste prompts for Claude Code sessions** |
+| `PLAYBOOK.md` | 16KB field guide: templates, document types, workflows |
+| `MIGRATION_GUIDE.md` | Complete migration: database → document system |
+| `MIGRATION_ASSESSMENT.md` | Phase 1 assessment report |
+| `AGENT_2_HANDOVER.md` | Next agent startup guide (read this if you're Agent #2) |
+| `CLAUDE.md` | Agent routing, AI team pipeline |
+| `RECLAIM_INTEGRATION.md` | Scheduling integration details |
+| `KNOWLEDGE_ARCHITECTURE.md` | TSM Framework, design decisions |
+| `IDIRNET_EXTRACTION_SUMMARY.md` | Knowledge transfer from idirnet |
+
+---
+
 ## Architecture Overview
 
 ```
@@ -28,22 +47,20 @@ Last Updated: March 16, 2026
         │
         ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            DATABASE LAYER                                   │
+│                         DOCUMENT SYSTEM (NEW)                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐ │
-│  │  thoughts   │◄──►│  requests   │    │relationships│    │scheduled_   │ │
-│  │  (core)     │    │  (work)     │    │(knowledge  │    │actions      │ │
-│  └──────┬──────┘    └─────────────┘    │   graph)    │    │             │ │
-│         │                               └─────────────┘    └─────────────┘ │
-│         │         ┌─────────────┐    ┌─────────────┐                       │
-│         └────────►│  user_access│    │ audit_log   │                       │
-│                   │  (4 tiers)  │    │             │                       │
-│                   └─────────────┘    └─────────────┘                       │
+│   Git Repository                    Supabase (Synced)                       │
+│   ─────────────                     ─────────────────                       │
+│   00-fleeting/                      documents table                         │
+│   10-literature/                    document_links table                    │
+│   20-permanent/                     4-tier access control                   │
+│   30-projects/                      Full-text + vector search               │
+│   40-structure/                                                             │
+│   50-requests/                                                              │
+│   60-archive/                                                               │
 │                                                                             │
-│  Row Level Security (RLS) enabled on all tables                            │
-│  Document Types: fleeting → literature → permanent → project → structure   │
-│  Access Levels: public < network < team < leadership                       │
+│   Zettelkasten-inspired + TSM Framework                                     │
 │                                                                             │
 └───────┬─────────────────────────────────────────────────────────────────────┘
         │
@@ -66,33 +83,208 @@ Last Updated: March 16, 2026
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+**Current Status:** Hybrid transition — database is source of truth, document system being built alongside.
+
 ---
 
-## Database Schema
+## Document System (New Architecture)
 
-### Document Type System (Zettelkasten-inspired)
+### Folder Structure (Zettelkasten + TSM)
 
-Knowledge evolves through stages:
+```
+documents/
+├── 00-fleeting/              # Raw captures
+│   ├── 01-daily/            # Daily notes
+│   └── 02-meetings/         # Meeting notes
+├── 10-literature/           # Source notes
+│   ├── 01-articles/
+│   ├── 02-books/
+│   ├── 03-podcasts/
+│   └── 04-videos/
+├── 20-permanent/            # Evergreen notes
+│   ├── 01-concepts/
+│   ├── 02-patterns/
+│   └── 03-methods/
+├── 30-projects/             # Active work
+│   ├── active/
+│   ├── planning/
+│   └── complete/
+├── 40-structure/            # MOCs, indexes
+├── 50-requests/             # Formal asks
+│   ├── open/
+│   ├── in-progress/
+│   ├── blocked/
+│   └── closed/
+├── 60-archive/              # Completed/deprecated
+└── 99-meta/                 # Templates, config
+    └── templates/
+```
 
-| Type | Description | Auto-promote? |
-|------|-------------|---------------|
-| `fleeting` | Raw capture, unprocessed | → permanent if 7+ days old + 2 backlinks |
-| `literature` | Notes on external sources (books, articles) | No |
-| `permanent` | Atomic ideas, written in own words | No |
-| `project` | Active work with tasks, logs | No |
-| `structure` | Maps of content, indexes (MOCs) | No |
-| `request` | Formal ask with acceptance criteria | No |
+### Document Types
 
-### Access Control (4-Tier)
+| Type | Stage | Purpose | Example |
+|------|-------|---------|---------|
+| `fleeting` | Capture | Quick notes, raw thoughts | Meeting notes, daily logs |
+| `literature` | Source | Notes on external content | Book highlights, article summaries |
+| `permanent` | Atomic | Evergreen knowledge | Concepts, patterns, methods |
+| `project` | Work | Active initiatives | Project plans, goals, deliverables |
+| `structure` | Navigation | Maps of content | MOCs, indexes, hub pages |
+| `request` | Action | Formal asks | Tasks with acceptance criteria |
 
-| Level | Who | Use For |
-|-------|-----|---------|
+### 4-Tier Access Control
+
+| Level | Visibility | Use For |
+|-------|------------|---------|
 | `public` | Anyone | Project descriptions, philosophy |
 | `network` | Extended network | Meeting notes, member profiles |
-| `team` | Core idirnet team | Contracts, budgets, internal decisions |
-| `leadership` | Kev + Laura only | Strategic planning, personnel, negotiations |
+| `team` | Core idirnet | Contracts, budgets, internal decisions |
+| `leadership` | Kev + Laura | Strategy, personnel, negotiations |
 
-**Security:** RLS policies enforce access at database level. Users cannot escalate beyond their tier.
+**Security:** 404-not-403 principle — unauthorized requests return "not found" not "forbidden".
+
+### TSM Framework Integration
+
+Triple Stack Model from Kev's MPhil thesis:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    GLOBAL STACK                         │
+│           (Infrastructure, Collective)                  │
+├─────────────────────────────────────────────────────────┤
+│  Ground → Root → Space → Bridge → Horizons → Crown    │
+│     ↓       ↓      ↓       ↓        ↓         ↓       │
+│  Econ   Instit   Environ  Bridge   Culture   Power    │
+└─────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────┐
+│                   INTERNAL STACK                        │
+│         (Embodied Experience, Individual)               │
+├─────────────────────────────────────────────────────────┤
+│  Ground → Root → Space → Bridge → Horizons → Crown    │
+│     ↓       ↓      ↓       ↓        ↓         ↓       │
+│  Body   Emotion  Percept  Discourse  Spirit   Will    │
+└─────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────┐
+│                   EXTERNAL STACK                        │
+│         (Mediation, Tools, Interfaces)                  │
+├─────────────────────────────────────────────────────────┤
+│  Ground → Root → Space → Bridge → Horizons → Crown    │
+│     ↓       ↓      ↓       ↓        ↓         ↓       │
+│  Artefact Material  Platform  Governance  Symbol  Meta│
+└─────────────────────────────────────────────────────────┘
+```
+
+Each document can be tagged with `tsm_stack` and `tsm_node` for ontological positioning.
+
+---
+
+## Template System (19 Templates)
+
+**Classification trigger:** Leading keyword in content
+
+### Layer 1: Team Core
+
+| # | Template | Keyword | Document Type | TSM Mapping |
+|---|----------|---------|---------------|-------------|
+| 1 | Decision | `Decision:` | `decision` | global/horizon-2 |
+| 2 | Risk | `Risk:` | `risk` | global/horizon-1 |
+| 3 | Milestone | `Milestone:` | `milestone` | global/bridge |
+| 4 | Spec | `Spec:` | `spec` | external/platform |
+| 5 | Meeting | `Meeting with` | `meeting` | internal/discourse |
+| 6 | Person | `[Name] —` | `person` | internal/emotion |
+| 7 | Stakeholder | `Stakeholder:` | `stakeholder` | external/engagement |
+| 8 | Sent | `Sent:` | `sent` | internal/discourse |
+
+### Layer 2: Role Templates
+
+| # | Template | Keyword | Document Type | Primary User |
+|---|----------|---------|---------------|--------------|
+| 9 | Budget | `Budget:` | `budget` | Laura |
+| 10 | Invoice | `Invoice:` | `invoice` | Laura / Kev |
+| 11 | Funding | `Funding:` | `funding` | Laura / Kev |
+| 12 | Legal | `Legal:` | `legal` | Laura / Kev |
+| 13 | Compliance | `Compliance:` | `compliance` | Anyone |
+| 14 | Contract | `Contract:` | `contract` | Laura |
+
+### Layer 3: Personal
+
+| # | Template | Keyword | Document Type | Notes |
+|---|----------|---------|---------------|-------|
+| 15 | Insight | `Insight:` | `insight` | Atomic ideas |
+| 16 | AI Save | `Saving from` | `ai_save` | AI outputs as sources |
+| 17 | Nutrition | `Ate:` | `nutrition` | Health tracking |
+| 18 | Health | `Health:` | `health` | Personal wellbeing |
+| 19 | Home | `Home:` | `home` | Personal tasks |
+
+---
+
+## Migration Status
+
+### Current System (Database-Centric)
+
+```sql
+-- Core table
+create table thoughts (
+  id uuid primary key default gen_random_uuid(),
+  content text not null,
+  embedding vector(1536),
+  metadata jsonb,  -- template, type, people, action_items, topics, source
+  created_at timestamptz default now()
+);
+```
+
+### Migration Plan (6 Phases)
+
+| Phase | Duration | Focus | Status |
+|-------|----------|-------|--------|
+| 1. Assessment | 1 week | Inventory, mapping, planning | ✅ Complete |
+| 2. Infrastructure | 1 week | Git repo, DB schema, sync | ⏳ Ready to start |
+| 3. Content Migration | 2 weeks | Tier 1-3 data migration | ⏳ Pending |
+| 4. Knowledge Graph | 3 days | Wikilink extraction, backlinks | ⏳ Pending |
+| 5. App Updates | 1 week | Document viewer, search UI | ⏳ Pending |
+| 6. Validation | 3 days | Testing, rollback plan | ⏳ Pending |
+
+### Migration Scripts
+
+Location: `~/OPENBRAIN/openBrain/scripts/migration/`
+
+| Script | Purpose |
+|--------|---------|
+| `export-data.ts` | Export thoughts from Supabase to JSON |
+| `transform-to-markdown.ts` | Convert JSON to Markdown + frontmatter |
+| `validate-links.ts` | Check for broken wikilinks |
+| `MIGRATION_WORKSHEET.md` | Track migration progress |
+
+**Usage:**
+```bash
+cd scripts/migration
+npm install
+
+# Export decisions
+npm run export:decisions
+
+# Transform to Markdown
+npm run transform:decisions
+
+# Validate links
+npm run validate
+```
+
+### Priority Tiers
+
+**🔴 Tier 1 (Critical)** — ~200 records
+- Decisions, Meeting Debriefs, Specs, Risks
+
+**🟡 Tier 2 (High)** — ~230 records  
+- Person Notes, Insights, AI Saves, Sent
+
+**🟢 Tier 3 (Medium/Low)** — ~130 records
+- Remaining 11 templates
+
+---
+
+## Database Schema (Current)
 
 ### Core Tables
 
@@ -122,28 +314,22 @@ scheduled_actions
   - scheduled_at, external_id, status
 ```
 
----
-
-## Migrations (Apply in Order)
+### Migrations
 
 Located in `~/supabase/migrations/`:
-
-```bash
-# Apply to Supabase
-psql $SUPABASE_DB_URL -f supabase/migrations/001_core_schema.sql
-psql $SUPABASE_DB_URL -f supabase/migrations/002_vector_search.sql
-psql $SUPABASE_DB_URL -f supabase/migrations/003_data_integrity.sql
-psql $SUPABASE_DB_URL -f supabase/migrations/004_scheduled_jobs.sql
-psql $SUPABASE_DB_URL -f supabase/migrations/005_api_functions.sql
-```
 
 | Migration | What It Does |
 |-----------|--------------|
 | `001_core_schema.sql` | Enums, tables, RLS, basic functions |
-| `002_vector_search.sql` | pgvector, similarity search, hybrid search, clustering |
-| `003_data_integrity.sql` | Validation, triggers, audit logs, cascade behavior |
+| `002_vector_search.sql` | pgvector, similarity search, hybrid search |
+| `003_data_integrity.sql` | Validation, triggers, audit logs |
 | `004_scheduled_jobs.sql` | pg_cron jobs, daily briefing, weekly review |
 | `005_api_functions.sql` | API functions for Edge Functions to call |
+
+**Apply:**
+```bash
+psql $SUPABASE_DB_URL -f supabase/migrations/001_core_schema.sql
+```
 
 ---
 
@@ -167,22 +353,14 @@ supabase functions deploy schedule-actions    # Reclaim/GCal/Todoist integration
 ├── meeting-notes/
 │   ├── index.ts       # Transcript parser
 │   └── deno.json
-├── schedule-actions/
-│   ├── index.ts       # Action item scheduling (3 approaches)
-│   └── deno.json
-└── migrations/        # Database migrations
-    ├── 001_core_schema.sql
-    ├── 002_vector_search.sql
-    ├── 003_data_integrity.sql
-    ├── 004_scheduled_jobs.sql
-    └── 005_api_functions.sql
+└── schedule-actions/
+    ├── index.ts       # Action item scheduling
+    └── deno.json
 ```
 
 ---
 
 ## API Functions (Database)
-
-These are SQL functions that Edge Functions call:
 
 ### Ingest
 ```sql
@@ -316,46 +494,6 @@ Three approaches implemented:
 
 ---
 
-## Template System (19 Templates, 3 Layers)
-
-**Classification trigger:** Leading keyword in content
-
-### Layer 1: Team Core
-
-| # | Template | Keyword | Type | Emoji |
-|---|----------|---------|------|-------|
-| 1 | Decision | `Decision:` | task | 🎯 |
-| 2 | Risk | `Risk:` | task | ⚠️ |
-| 3 | Milestone | `Milestone:` | observation | 🏁 |
-| 4 | Spec | `Spec:` | reference | 🔧 |
-| 5 | Meeting Debrief | `Meeting with` | observation | 📋 |
-| 6 | Person Note | `[Name] —` | person_note | 👤 |
-| 7 | Stakeholder | `Stakeholder:` | person_note | 🤝 |
-| 8 | Sent | `Sent:` | task | 📤 |
-
-### Layer 2: Role Templates
-
-| # | Template | Keyword | Type | Primary User |
-|---|----------|---------|------|-------------|
-| 9 | Budget | `Budget:` | observation | Laura |
-| 10 | Invoice | `Invoice:` | task | Laura / Kev |
-| 11 | Funding | `Funding:` | observation | Laura / Kev |
-| 12 | Legal | `Legal:` | observation | Laura / Kev |
-| 13 | Compliance | `Compliance:` | task | Anyone |
-| 14 | Contract | `Contract:` | reference | Laura |
-
-### Layer 3: Personal
-
-| # | Template | Keyword | Type | Notes |
-|---|----------|---------|------|-------|
-| 15 | Insight | `Insight:` | idea | Kev uses heavily |
-| 16 | AI Save | `Saving from` | reference | AI outputs |
-| 17 | Nutrition | `Ate:` | observation | Health tracking |
-| 18 | Health | `Health:` | observation | Wellbeing |
-| 19 | Home | `Home:` | observation | Personal tasks |
-
----
-
 ## Google Workspace Integration
 
 ### Google Drive Folders
@@ -375,6 +513,39 @@ Three approaches implemented:
 - Sends to `meeting-notes` Edge Function
 - Creates summary doc in shared folder
 - Marks processed: `ob-processed` in file description
+
+---
+
+## AI Team Pipeline (Pipeline B)
+
+```
+Kimi deep research ──────┐
+                         ├──> Opus decides ──> Sonnet builds ──> Opus corrects
+Gemini gathers Google ───┘
+                         ──> Kimi validates
+                         ──> Gemini checks Google integration
+                         ──> Codex stress tests at build
+```
+
+| Step | Model | Job |
+|------|-------|-----|
+| 1a. Code research | Kimi 2.5 | Deep research, codebase analysis |
+| 1b. Google research | Gemini CLI | Calendar, Gmail, Drive context |
+| 2. Decision | Claude Opus 4.6 | Architecture, roadmap, prompts |
+| 3. Implementation | Claude Sonnet 4.6 | Code, docs, config |
+| 4. Correction | Claude Opus 4.6 | Review, fix logic |
+| 5. Validation | Kimi 2.5 | Validate against research |
+| 6. Integration | Gemini CLI | Google Workspace fit |
+| 7. Build gate | Codex (OpenAI) | Stress tests, error analysis |
+
+**Quick commands (`ob` is on PATH):**
+```bash
+ob pipeline                    # Full Pipeline B
+ob pipeline --dry-run          # Preview steps
+ob kimi research               # Deep research
+ob gemini briefing             # Morning briefing data
+ob codex                       # Stress test
+```
 
 ---
 
@@ -410,31 +581,39 @@ RECLAIM_API_KEY=...
 
 ## Current State
 
-### Completed
+### Completed (Original Phases 0-4)
 
-| Phase | Status |
-|-------|--------|
-| Phase 0: Foundation | ✅ Complete |
-| Phase 1: Template System v2 | ✅ Complete |
-| Phase 2: Automated Meeting Notes | ✅ Complete |
-| Phase 4: Morning Briefing Dashboard | ✅ Core built |
-| Backend Architecture (5-step migration) | ✅ Complete |
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 0: Foundation | ✅ | Core database, Edge Functions |
+| Phase 1: Templates v2 | ✅ | 19 templates, 3 layers |
+| Phase 2: Meeting Notes | ✅ | Automated transcript processing |
+| Phase 3: Team Onboarding | ⏳ | Kris pending Gemini folder ID |
+| Phase 4: Morning Briefing | ✅ | Dashboard built, needs deploy |
 
-### In Progress
+### New Phases from idirnet (9-15)
 
-| Phase | Status |
-|-------|--------|
-| Phase 3: Team Onboarding | ⏳ Kris pending Gemini folder ID |
-| Phase 4: Dashboard Deploy | ⏳ Needs Vercel deploy |
+| Phase | Status | Description |
+|-------|--------|-------------|
+| Phase 9: Document Type System | ⏳ | Zettelkasten folder structure |
+| Phase 10: Frontmatter Schema | ⏳ | Standardized YAML schema |
+| Phase 11: 4-Tier Access Control | ⏳ | RLS with 404-not-403 |
+| Phase 12: Request Tracking | ⏳ | Formal asks with acceptance criteria |
+| Phase 13: Knowledge Graph | ⏳ | Wikilinks, backlinks, relationships |
+| Phase 14: TSM Framework | ⏳ | 21-node ontological structure |
+| Phase 15: Remote-Native Protocols | ⏳ | Async handoffs, ADR template |
 
-### Pending
+### Completed in This Session
 
-| Phase | Description |
-|-------|-------------|
-| Phase 5 | To-Do tables + Calendar bidirectional sync |
-| Phase 6 | Nutrition tracking dashboard |
-| Phase 7 | Gmail parsing (Gemini Gem) |
-| Phase 8 | Weekly Review automation |
+| Deliverable | Location | Size |
+|-------------|----------|------|
+| PLAYBOOK.md | `~/OPENBRAIN/openBrain/PLAYBOOK.md` | 41 KB |
+| MIGRATION_GUIDE.md | `~/OPENBRAIN/openBrain/MIGRATION_GUIDE.md` | 27 KB |
+| MIGRATION_ASSESSMENT.md | `~/OPENBRAIN/openBrain/MIGRATION_ASSESSMENT.md` | 14.6 KB |
+| Migration Scripts | `~/OPENBRAIN/openBrain/scripts/migration/` | 4 files |
+| Updated ROADMAP.md | `~/OPENBRAIN/openBrain/ROADMAP.md` | 20 KB |
+| KNOWLEDGE_ARCHITECTURE.md | `~/OPENBRAIN/openBrain/KNOWLEDGE_ARCHITECTURE.md` | 6 KB |
+| IDIRNET_EXTRACTION_SUMMARY.md | `~/OPENBRAIN/openBrain/IDIRNET_EXTRACTION_SUMMARY.md` | 11 KB |
 
 ---
 
@@ -455,9 +634,16 @@ psql $SUPABASE_DB_URL -f supabase/migrations/001_core_schema.sql
 # Dashboard
 cd apps/my-app && npm run dev
 
-# AI Review (run before major changes)
+# Migration Scripts
+cd scripts/migration
+npm run export:decisions
+npm run transform:decisions
+npm run validate
+
+# AI Review
 ./scripts/kimi-agent.sh review
 ./scripts/kimi-agent.sh security
+ob codex
 ```
 
 ---
@@ -466,25 +652,41 @@ cd apps/my-app && npm run dev
 
 1. **Document Types + Templates:** Templates classify *topic domain* (what it's about). Document types classify *knowledge stage* (how processed it is). Both dimensions required.
 
-2. **4-Tier Access Control:** Without access control, users self-censor. With clear tiers, people capture freely knowing the right audience will see it.
+2. **Hybrid Architecture:** Document system (Git + Markdown) for authorship + portability. Database for search + relationships. Sync layer keeps them aligned.
 
-3. **Row Level Security:** Access enforced at database level, not application layer. Prevents data leakage even if API is compromised.
+3. **4-Tier Access Control:** Without access control, users self-censor. With clear tiers, people capture freely knowing the right audience will see it.
 
-4. **Knowledge Graph:** Relationships enable discovery, not just search. `[[wikilinks]]` and `related` fields create emergent structure.
+4. **Row Level Security:** Access enforced at database level, not application layer. Prevents data leakage even if API is compromised.
 
-5. **Database Functions as API:** Edge Functions are thin wrappers. Core logic lives in SQL functions for performance and consistency.
+5. **Knowledge Graph:** Relationships enable discovery, not just search. `[[wikilinks]]` and `related` fields create emergent structure.
+
+6. **TSM Framework:** 21-node ontological structure provides shared vocabulary for positioning ideas across personal/collective and abstract/concrete dimensions.
+
+7. **Migration Strategy:** Parallel systems during transition. Database remains source of truth until validation complete. Git becomes source of truth after.
 
 ---
 
-## Reference
+## Files Reference
 
-| Resource | Location |
-|----------|----------|
-| Supabase Dashboard | https://supabase.com/dashboard/project/jeuxslbhjubxmhtzpvqf |
-| Project Root | `~/OPENBRAIN/openBrain/` |
-| Edge Functions | `~/supabase/functions/` |
-| Migrations | `~/supabase/migrations/` |
-| Dashboard | `~/OPENBRAIN/openBrain/apps/my-app/` |
-| Agent Routing | `~/OPENBRAIN/openBrain/CLAUDE.md` |
-| Roadmap | `~/OPENBRAIN/openBrain/ROADMAP.md` |
-| Reclaim Integration | `~/OPENBRAIN/openBrain/RECLAIM_INTEGRATION.md` |
+| File | Purpose |
+|------|---------|
+| `HANDOVER.md` | This file — system overview |
+| `CLAUDE.md` | Agent routing, AI pipeline |
+| `ROADMAP.md` | All 15 phases, checkboxes, deploy commands |
+| `PLAYBOOK.md` | 16KB field guide: templates, workflows, examples |
+| `MIGRATION_GUIDE.md` | Complete migration plan (6 phases) |
+| `MIGRATION_ASSESSMENT.md` | Phase 1 assessment report |
+| `KNOWLEDGE_ARCHITECTURE.md` | TSM Framework, design decisions |
+| `IDIRNET_EXTRACTION_SUMMARY.md` | Knowledge transfer from idirnet |
+| `RECLAIM_INTEGRATION.md` | Scheduling integration details |
+
+---
+
+## Next Steps
+
+1. **Review HANDOVER.md** — Ensure accuracy
+2. **Start Phase 2** — Infrastructure setup (Git repo, DB schema, sync)
+3. **Or begin Tier 1 Migration** — Export decisions, transform, validate
+4. **Or deploy Dashboard** — Get Morning Briefing live on Vercel
+
+See `ROADMAP.md` for full phase details and priorities.

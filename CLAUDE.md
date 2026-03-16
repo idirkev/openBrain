@@ -342,12 +342,55 @@ ob codex                       # Codex stress test
 ## Rules
 
 1. **Update ROADMAP.md** checkboxes as work completes
-2. **Update project memory** when decisions or phase changes happen
-3. **Use Kimi Code sessions** for all work (`kc` not just `kimi`)
-4. **Track costs** — run `kc cost` before long operations
-5. **Use plan mode** for multi-step features
-6. **Every Edge Function change** gets deployed, reviewed, and tested
-7. **Do not invent. Do not over-extract.** Short sentences. No em dashes.
+2. **Update PROGRESS_LOG.md** with day-by-day progress (see Checkpoint System below)
+3. **Update project memory** when decisions or phase changes happen
+4. **Use Kimi Code sessions** for all work (`kc` not just `kimi`)
+5. **Track costs** — run `kc cost` before long operations
+6. **Use plan mode** for multi-step features
+7. **Every Edge Function change** gets deployed, reviewed, and tested
+8. **Do not invent. Do not over-extract.** Short sentences. No em dashes.
+
+---
+
+## Checkpoint System (REQUIRED)
+
+**Every Claude Code session must follow this protocol:**
+
+### At Start of Session
+1. Read `PROGRESS_LOG.md` — understand what happened yesterday
+2. Check `ROADMAP.md` "Current Checkpoint" section
+3. Read `CLAUDE_CODE_PROMPT.md` for the prompt template
+4. Add new Day N entry to `PROGRESS_LOG.md`
+
+### During Session
+- Update checkboxes in `PROGRESS_LOG.md` in real-time
+- Record blockers immediately when they occur
+- Note any decisions made
+
+### At End of Session
+1. Complete Day N entry in `PROGRESS_LOG.md`
+2. Update Phase Progress Summary in `PROGRESS_LOG.md`
+3. Add Day N+1 entry with "Pending" status
+4. Update `ROADMAP.md` "Current Checkpoint" section
+5. Create/update `AGENT_N_HANDOVER.md` if handing off to next agent
+
+### Sequential Advancement Rules
+- **Daily Entry Required** — Every day of work gets a `PROGRESS_LOG.md` entry
+- **Checkpoint Before Next** — Mark phase complete before starting next
+- **Blockers Escalate** — If blocked > 4 hours, document and escalate
+
+### Quick Prompt (Copy This)
+```
+I'm working on Open Brain Day N. 
+
+First: Read PROGRESS_LOG.md and ROADMAP.md "Current Checkpoint" section.
+Then: [Choose path - Migration / Dashboard / Onboarding]
+
+Deliverables:
+- Update PROGRESS_LOG.md with Day N entry
+- Update ROADMAP.md checkpoint when done
+- Create AGENT_N_HANDOVER.md if needed
+```
 
 ---
 
@@ -365,6 +408,17 @@ ob codex                       # Codex stress test
 | Weekly summary | `kc digest` |
 | Deploy function | `supabase functions deploy <name>` |
 | Apply migration | `psql $DB -f migrations/00X_*.sql` |
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `PROGRESS_LOG.md` | Day-by-day progress tracker |
+| `ROADMAP.md` | Current checkpoint, all 15 phases |
+| `CLAUDE_CODE_PROMPT.md` | Copy-paste prompts for sessions |
+| `HANDOVER.md` | Complete system architecture |
+| `PLAYBOOK.md` | Document types, templates, workflows |
+| `AGENT_2_HANDOVER.md` | Next agent startup guide |
 
 ---
 
