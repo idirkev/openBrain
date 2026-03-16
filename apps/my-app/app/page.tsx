@@ -12,6 +12,7 @@ import { FinanceTicker } from './components/FinanceTicker'
 import { CapturesList } from './components/CapturesList'
 import { ActionItems } from './components/ActionItems'
 import { PeopleContext } from './components/PeopleContext'
+import { ReclaimSchedule } from './components/ReclaimSchedule'
 import { Brain, Calendar, CheckCircle, Users } from 'lucide-react'
 
 interface BriefingData {
@@ -168,23 +169,8 @@ export default function MorningBriefing() {
             <FinanceTicker />
             <NewsFeed />
             
-            {/* Gemini Brief Placeholder */}
-            <Card className="border-dashed">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <span>🤖</span>
-                  Gemini Morning Brief
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Gemini integration coming soon. This will pull your Calendar, Gmail, and Drive activity.
-                </p>
-                <Badge variant="outline" className="mt-3 text-xs">
-                  Phase 4 - In Progress
-                </Badge>
-              </CardContent>
-            </Card>
+            {/* Reclaim Schedule Integration */}
+            <ReclaimSchedule />
           </div>
         </div>
 

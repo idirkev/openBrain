@@ -59,6 +59,37 @@ Supabase CLI v2.75.0 installed via Homebrew. Update available: v2.78.1.
 - Marks processed files with description "ob-processed" to prevent duplicates
 - Output docs prefixed "OB: " and moved to shared output folder
 
+## Reclaim.ai Integration
+
+Three approaches for scheduling Open Brain action items:
+
+### Option 1: Google Calendar Bridge (Recommended)
+- Edge Function: `schedule-actions` creates GCal events with `[Open Brain]` prefix
+- Reclaim auto-detects and schedules based on priority/category
+- Extended properties include: template, priority, reclaimCategory
+
+### Option 2: Reclaim API Direct
+- Edge Function: Direct API calls to `api.reclaim.ai`
+- Creates tasks with autoSchedule enabled
+- Requires Reclaim API key (beta)
+
+### Option 3: Todoist Bridge
+- Edge Function: Creates Todoist tasks with `open-brain` label
+- Reclaim syncs Todoist tasks automatically
+- Requires Todoist API key
+
+### Template → Category Mapping
+
+| Template | Reclaim Category | Duration | Priority |
+|----------|------------------|----------|----------|
+| Decision | Strategic | 30min | High |
+| Risk | Urgent | 45min | High |
+| Spec | Deep Work | 2hr | Medium |
+| Budget, Funding, Legal, Compliance | Finance/Urgent | 1hr | High |
+| Meeting Debrief, Sent | Admin | 15min | Low |
+
+**Dashboard:** Shows unscheduled actions with "📅 GCal" and "⚡ Reclaim" buttons
+
 ## Template System (19 templates, 3 layers)
 
 ### Layer 1: Team Core (all idirnet members)
@@ -113,7 +144,7 @@ Supabase CLI v2.75.0 installed via Homebrew. Update available: v2.78.1.
 - Kris to provide his Gemini folder ID for his own Apps Script instance
 - Laura, Jochem, Colm onboarding (they don't have Open Brain yet)
 - Team agreement on which Layer 1 templates to adopt as standard
-- Morning briefing dashboard (Phase 1 from earlier session)
+- Morning briefing dashboard with Reclaim integration (Phase 4)
 - Weekly review automation
 - Email forwarding pipeline (ingest from forwarded emails)
 
