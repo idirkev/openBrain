@@ -328,3 +328,272 @@ git stash pop
 
 **Source:** Transcript from March 12, 2026 meeting with Colm Hewson
 **Location:** `~/Downloads/Meeting started 2026_03_12 16_11 GMT – Notes by Gemini.md`
+
+---
+
+## Internet/idirnet Knowledge System (Extracted from Vault)
+
+### Philosophy: "The Best Agent is a Markdown File"
+
+The idirnet v2 methodology from March 16, 2026:
+
+> "The best AI agent is not a platform, a visual workflow builder, or a production framework. It is a markdown file and scripts, routed through that markdown file, organized through a folder structure."
+
+This follows the Ken Thompson principle (1968): programs run best through a tree of files. Anthropic's Claude Code uses `CLAUDE.md` files for the same reason.
+
+**Core stack:**
+- **Obsidian** — Local markdown editing
+- **Git** — Single source of truth (replaces Google Drive sync)
+- **Quartz** — Publishing to web
+- **Vercel** — Auto-deploy on push
+- **Claude Code** — AI-assisted knowledge work
+
+### Zettelkasten Method (3 Note Types)
+
+| Type | Folder | Purpose | Lifecycle |
+|------|--------|---------|-----------|
+| **Fleeting** | `00-Inbox/` | Quick raw captures | Process within days, then promote or archive |
+| **Literature** | `10-Literature/` | Source summaries | Extract from books/articles, link to permanent notes |
+| **Permanent** | `20-Permanent/` | Atomic ideas | Standalone, linked, refined knowledge |
+
+**Linking principle:** Use `[[wikilinks]]` to connect ideas. The network grows more valuable over time.
+
+### Vault Folder Structure
+
+```
+content/
+├── 00-Inbox/          # Transient captures (process regularly)
+├── 10-Literature/     # Source notes (books, articles, meetings)
+├── 20-Permanent/      # Atomic ideas, refined knowledge
+├── 30-Structure/      # MOCs (Maps of Content), indexes
+├── 40-Projects/       # Active project notes
+├── 50-Templates/      # Note templates (Fleeting, Literature, Permanent)
+├── 60-Assets/         # Images, attachments
+├── 70-Archive/        # Old notes, stale captures
+├── docs/              # Documentation, guides
+├── knowledge/         # Accumulated notes
+├── projects/          # meetings/, members/, proposals/
+└── requests/          # AV specs, training manuals, etc.
+```
+
+### Document Frontmatter Schema
+
+Every note must include:
+
+```yaml
+---
+title: "Required — display title"
+description: "Brief summary"
+publish: true/false          # Controls website visibility
+type: permanent|literature|project|meeting|member|structure
+status: draft|open|in-progress|review|completed
+author: "Your Name"          # Always set this
+created: "YYYY-MM-DD"
+updated: "YYYY-MM-DD"
+tags: [topic, subtopic]
+# TSM metadata (for Lightheart work):
+tsm_stack: global|internal|external
+tsm_plane: Ground|Runtime|Circulation|...
+tsm_node: global-ground
+---
+```
+
+### Collaboration Rules
+
+1. **Always set `author`** — Fill in your name in frontmatter
+2. **Don't overwrite others** — If you disagree, create a linked response:
+   ```markdown
+   ## My response to [[Original Note Title]]
+   
+   I think the opposite because...
+   ```
+3. **Use callouts for comments:**
+   ```markdown
+   > [!note] @YourName
+   > This connects to [[Another Idea]]
+   ```
+4. **Process your inbox** — Regularly review `00-Inbox/`, promote to Permanent or archive
+5. **One idea per note** — If writing about two things, make two notes
+6. **Your own words** — Never copy-paste from sources
+
+---
+
+## Triple Stack Model (TSM) Quick Reference
+
+The organizing framework for Lightheart and idirnet work. 3 stacks × 7 planes = 21 nodes.
+
+### The 3 Stacks
+
+| Stack | Focus | Question |
+|-------|-------|----------|
+| **Global** | Infrastructure & Systems | "What makes this possible?" |
+| **Internal** | Embodied Perception | "What does it feel like to be here?" |
+| **External** | Mediation & Ritual | "How do people interact?" |
+
+### The 21 Planes (Selected)
+
+**Global Stack (Infrastructure):**
+- Ground → Power, HVAC, safety
+- Runtime → Media servers, sync, playback
+- Circulation → Visitor flow
+- Channels → Consent, GDPR
+- Frames → Sightlines, captions
+- Roles → Staff training
+- Horizons → Governance, KPIs
+
+**Internal Stack (Embodied):**
+- Root → Physical grounding
+- Sacral → Creativity, pacing
+- Solar Plexus → Agency, choice
+- Heart → Connection
+- Throat → Articulation
+- Third Eye → Perception
+- Crown → Integration
+
+**External Stack (Mediation):**
+- Space → Point clouds, sightlines
+- Portal → Threshold, entry
+- Gesture → Movement, consent
+- Mirror → Feedback
+- Narrative → Story, horizon cards
+- Atmosphere → Light, sound, air
+- Feedback Loop → Learning
+
+### Key Dependencies
+
+```
+Global Ground → Global Runtime
+      ↓              ↓
+Internal Root    Internal Sacral
+      ↓
+External Space → External Portal
+```
+
+**Status legend:** 🟢 Complete | 🟡 Active | ⚪ Planned | 🔴 Blocked
+
+---
+
+## Vercel + GitHub Auto-Deploy Setup
+
+### Prerequisites
+- Vercel account access
+- GitHub repository admin access
+- Environment variables ready
+
+### Dashboard Setup (Recommended)
+
+1. **Vercel Dashboard** → Find project → Settings → Git
+2. **Connect Git Repository** → Select GitHub → Authorize
+3. **Select repo:** `legofsalmon/idirdev`
+4. **Configure:**
+   - Production Branch: `main`
+   - Build Command: `npm run build`
+   - Install Command: `npm install`
+5. **Environment Variables:** Add all from `.env.local`
+6. **Deploy** — Trigger first build
+
+### Post-Setup Verification
+
+```bash
+# Test auto-deploy
+echo "# Test" >> README.md
+git add README.md
+git commit -m "chore: Test auto-deploy"
+git push origin main
+```
+
+Check Vercel dashboard — deployment should appear within 1-2 minutes.
+
+### Rollback Procedure
+
+If deployment breaks:
+1. Vercel Dashboard → Deployments
+2. Find last working deployment
+3. Click **...** → **Promote to Production**
+4. Site immediately reverts
+
+---
+
+## Tech Stack Reference (idirnet)
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| Framework | Next.js 15 | App Router, SSG |
+| UI | React 19 + SCSS | Components, custom design system |
+| Language | TypeScript | Type safety |
+| Hosting | Vercel | Auto-deploy on push |
+| Content | gray-matter + unified | Markdown processing |
+| Viz | React Flow + dagre | Node-based diagrams |
+| 3D | Hyperfy (evaluating) | Virtual worlds, WebXR |
+| AV | openFrameworks, Pixera, L-ISA | Creative tech |
+| Sync | Obsidian Git plugin | Auto-commit/push |
+
+---
+
+## Expanded Questions for Claude from Kimi
+
+### Git & Deployment
+1. "What's the safest way to merge my branch with remote changes?"
+2. "How do I recover from a failed force push?"
+3. "Why is Vercel showing 'no output directory' error?"
+4. "What's the difference between git pull and git fetch?"
+5. "How do I set up Obsidian Git plugin for auto-sync?"
+
+### Architecture
+6. "Should we use Next.js or Quartz for the docs site?"
+7. "Tailwind vs SCSS — trade-offs for this specific project?"
+8. "How should we structure subdomains: subfolder vs subdomain?"
+9. "When should we use static site generation vs server-side rendering?"
+10. "How do we implement the TSM framework in code?"
+
+### Collaboration
+11. "What's the best branching strategy for 3-4 developers on retainer?"
+12. "How do we handle Obsidian + Git conflicts when multiple people edit?"
+13. "Should we use Google Drive sync or Git-only for Obsidian vaults?"
+14. "How do we structure meeting notes for maximum discoverability?"
+15. "What's the best way to link fleeting notes to permanent notes?"
+
+### Security
+16. "What should our .gitignore include for this project?"
+17. "How do we safely store environment variables for Vercel?"
+18. "How do we handle sensitive data in meeting notes?"
+
+### TSM & Framework
+19. "Which TSM plane should documentation live in?"
+20. "How do we track dependencies between the 21 nodes?"
+21. "What are the acceptance criteria for each TSM plane?"
+
+### Integration
+22. "How does Open Brain protocol handshake with KOD (Knowledge Organization/Decision system)?"
+23. "How do we extract metadata from Slack/WhatsApp into the vault?"
+24. "What's the best way to sync Obsidian with the published website?"
+
+---
+
+## Document Evolution Tracker
+
+| Source | Extracted To | Date |
+|--------|--------------|------|
+| Colm Session (March 12) | Git workflow, Vercel rules | 2026-03-16 |
+| idirdev vault (20-Permanent) | Zettelkasten method, Philosophy | 2026-03-16 |
+| idirdev vault (docs/) | TSM framework, Deployment guide | 2026-03-16 |
+| idirdev vault (50-Templates) | Frontmatter schema, Note types | 2026-03-16 |
+| idirdev vault (30-Structure) | MOC navigation pattern | 2026-03-16 |
+
+---
+
+## Action Items for Next Pass (Bottom-Up Agent)
+
+The following areas need exploration from the bottom up:
+
+1. **knowledge/notes/** — 61 subfolders of accumulated notes
+2. **projects/meetings/** — 12 meeting transcripts to extract decisions
+3. **projects/members/** — 8 team profiles for roles/responsibilities
+4. **70-Archive/** — Historical decisions and context
+5. **requests/** — AV specs, training manuals, operational docs
+6. **Google Drive shared folders** — Documents not yet in Git
+7. **idirnet/content/** — Additional vault content (learning/, hiring/)
+
+---
+
+*This section added by top-down extraction pass. See Document Evolution Tracker above.*
