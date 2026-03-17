@@ -1,7 +1,7 @@
 # Open Brain — Project Status
 
-**Updated:** 2026-03-17 02:10 UTC  
-**Session:** Agent 2 (Blocker Resolution + Gemini Integration + Incented Integration)
+**Updated:** 2026-03-17 02:30 UTC  
+**Session:** Agent 2 (Blocker Resolution + Gemini Integration + Incented Integration + Git Sync)
 
 ---
 
@@ -315,6 +315,20 @@ In the Reclaim Schedule card, click **"Preview Smart Schedule"** to:
 | **UI System** | ✅ **idirnet** | Clean, minimal, indigo-accented design |
 | Raycast Extension | ✅ Ready | `integrations/raycast/` |
 | MCP in Claude Code | ✅ Connected | `search_thoughts()`, `capture_thought()` |
+| **Git Status** | ✅ **Synced** | main & v2 at `5216125` |
+
+### Recent Commits (8 commits)
+
+| Commit | Description |
+|--------|-------------|
+| `5216125` | Update dashboard with idirnet design system |
+| `7db36c2` | Update core documentation and configuration |
+| `c64b9cd` | Add AI session captures and TSM mappings |
+| `75eb422` | Add project tracking and command documentation |
+| `aa37e85` | Add Raycast extension for quick capture |
+| `269922f` | Add dashboard UI components for AI features |
+| `54ebc56` | Add dashboard API routes for AI features |
+| `9581012` | Add Incented integration docs and agent protocols |
 
 ---
 
@@ -323,9 +337,8 @@ In the Reclaim Schedule card, click **"Preview Smart Schedule"** to:
 1. Add RECLAIM_API_KEY to enable smart scheduling (5 min)
 2. Import Raycast extension (5 min)
 3. Test voice pipeline end-to-end (15 min)
-4. Update ROADMAP checkboxes
-5. Add OpenWeather API key for weather widget
-6. Deploy dashboard to Vercel (optional)
+4. Deploy dashboard to Vercel (optional)
+5. Begin Phase 16: Incented integration (implement process-incented Edge Function)
 
 ---
 
