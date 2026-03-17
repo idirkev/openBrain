@@ -14,9 +14,9 @@ KIMI_REPORT_MODE="agent"        # Agent mode for report cards
 # Gemini (Google)
 GEMINI_CLI="/opt/homebrew/bin/gemini"
 GEMINI_VERSION_CMD="$GEMINI_CLI --version"
-GEMINI_MODEL="gemini-2.0-flash"          # Free tier default
-GEMINI_THINK_MODEL="gemini-2.0-flash"    # Deep Think mode (free tier, swap to gemini-3.1-pro-preview when billing enabled)
-GEMINI_RESEARCH_MODEL="gemini-2.0-flash" # Deep Research (free tier, swap to gemini-3.1-pro when billing enabled)
+GEMINI_MODEL="gemini-2.5-flash"          # Free tier default (verify with: gemini --list-models)
+GEMINI_THINK_MODEL="gemini-2.5-flash"    # Deep Think mode (swap to gemini-2.5-pro when billing enabled)
+GEMINI_RESEARCH_MODEL="gemini-2.5-flash" # Deep Research (swap to gemini-2.5-pro when billing enabled)
 
 # Claude (Anthropic)
 CLAUDE_CLI="claude"

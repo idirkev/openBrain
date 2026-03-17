@@ -404,7 +404,7 @@ if ! _skip_step 1; then
 
     pid_1a=$(_run_background \
         "${RUN_DIR}/step-1a-kimi-research.md" \
-        "${KIMI_CLI}" --model "${KIMI_MODEL}" --mode "${KIMI_RESEARCH_MODE}" \
+        "${KIMI_CLI}" --model "${KIMI_MODEL}" \
             "${_task_prefix}Perform a deep research sweep on the current Open Brain pipeline phase. " \
             "Output in Open Brain Codex format. " \
             "Return: SUMMARY (3 bullets), DETAILED FINDINGS (full), CODEX metadata.")
@@ -653,7 +653,7 @@ if ! _skip_step 5; then
 
     pid_5a=$(_run_background \
         "${RUN_DIR}/step-5a-kimi-validation.md" \
-        "${KIMI_CLI}" --model "${KIMI_MODEL}" --mode "${KIMI_REVIEW_MODE}" \
+        "${KIMI_CLI}" --model "${KIMI_MODEL}" \
             "${_task_prefix}Review the implementation at ${RUN_DIR}/step-4-opus-correction.md. " \
             "Check for bugs, logic errors, and security issues. " \
             "Output in Open Brain Codex format. " \
