@@ -1,4 +1,47 @@
+# Environment
 .env
+.env.local
 *.env.local
+
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temp files
+/tmp/
+*.tmp
+*.temp
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Audio recordings (voice capture temp files)
+/tmp/ob-voice-*.wav
+/tmp/voice-*.wav
+/tmp/test-*.wav
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Testing
+/coverage
+.nyc_output/
+
+# Misc
+*.pem
+*.cert
+*.key

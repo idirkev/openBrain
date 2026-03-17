@@ -1,30 +1,44 @@
 # Open Brain Roadmap
 
-Last updated: 2026-03-16
+Last updated: 2026-03-17
 
 ---
 
-## 🎯 Current Checkpoint
+## Current Checkpoint
 
 | | |
 |:---|:---|
-| **Date** | Day 1 — March 16, 2026 |
-| **Phase** | Phase 1 (Assessment) ✅ **COMPLETE** |
-| **Agent** | #1 (Session complete) |
-| **Next Agent** | #2 (Ready to start) |
-| **Decision Required** | Which path? (A: Migration / B: Dashboard / C: Onboarding) |
+| **Date** | March 17, 2026 |
+| **Phase** | v2 Readiness (Raycast Integration Complete) |
+| **Branch** | `v2` active, integration branch for Raycast |
+| **Next** | Deploy edge functions + dashboard env fix |
 
-**Today's Work:**
-- ✅ Extracted patterns from 50+ idirnet documents
-- ✅ Created PLAYBOOK.md (41 KB) - complete field guide
-- ✅ Created MIGRATION_GUIDE.md (27 KB) - 6-phase plan
-- ✅ Created migration scripts (export, transform, validate)
-- ✅ Updated HANDOVER.md (28 KB) - system overview
-- ✅ Created AGENT_2_HANDOVER.md - next agent guide
+**Recent Completions — 2026-03-17:**
+- ✅ System State Audit (Agent 1): 4 edge functions, 7 migrations verified
+- ✅ Raycast Extension Built: 5 commands (obc, obs, obl, obst, obq)
+- ✅ TSM Obligation Mapper: 12 nodes mapped for Kev
+- ✅ Pipeline Validation: All 7 steps tested in dry-run
+- ✅ Progress Log created: Historical + current tracking
 
-**Sequential Status:** Day 1 of migration assessment complete. Ready for Day 2 infrastructure work OR dashboard deployment OR team onboarding.
+**Architecture Decisions (D1-D6) — 2026-03-16:**
+- D1: 15 docs archived, CLAUDE.md trimmed to 3KB
+- D2: DB-to-Git migration archived (database-centric model sufficient)
+- D3: Templates evolve (table-driven), TSM stays conceptual, 344 thoughts carry forward
+- D4: Agent model simplified to Opus/Sonnet/Codex (3-tier, Pipeline B retired)
+- D5: idirnet portal (176K files) left in place, patterns already extracted
+- D6: Immediate actions executed (archive, baseline, commit b97fcc7, v2 branch)
 
-**See:** `PROGRESS_LOG.md` for day-by-day advancement tracker
+**Critical Blockers:**
+1. 🔴 Dashboard build fails (missing NEXT_PUBLIC_SUPABASE_ANON_KEY)
+2. 🟡 Edge functions deployment status unknown
+3. 🟡 MCP_ACCESS_KEY setup undocumented
+
+**TSM Status:** 9/12 obligations fulfilled (75%)
+- L1 Internal: 3/3 ✅
+- L2 External: 4/6 🟡 (Knowledge Systems & Interface pending deploy)
+- L3 Planetary: 2/3 🟡 (Data Sovereignty needs backup)
+
+**See:** `PROGRESS_LOG.md` for detailed session logs
 
 ---
 
@@ -113,8 +127,8 @@ Single web page, daily summary, phone-friendly.
 
 - [x] Scaffold Next.js app on Vercel
 - [x] Supabase query: yesterday's captures, open action items, people context
-- [ ] Gemini Gem: "Morning Brief" pulls today's calendar + unread priority emails + recent Drive activity
-- [ ] Gemini output feeds into briefing page (replaces raw Google Calendar API calls)
+- [x] Gemini Gem: "Morning Brief" pulls today's calendar + unread priority emails + recent Drive activity
+- [x] Gemini output feeds into briefing page (replaces raw Google Calendar API calls)
 - [x] OpenWeather API: Dublin weather
 - [x] Positive news feed (Good News Network RSS or similar)
 - [x] Renewable energy tickers (Yahoo Finance API: ICLN, TAN, PBW, QCLN)
@@ -122,11 +136,104 @@ Single web page, daily summary, phone-friendly.
 - [ ] Scheduled Edge Function: 8am Slack DM with briefing summary
 - [ ] Review and deploy
 
-**Progress:** Core dashboard built. Remaining: Gemini integration, scheduled Slack DM.
+**Progress:** Core dashboard built. ✅ Gemini integration complete (AI Morning Brief + Smart Scheduler). Remaining: scheduled Slack DM.
 
 **Location:** `~/OPENBRAIN/openBrain/apps/my-app/`
 
 **Stack:** Next.js on Vercel, Supabase client, Gemini Gem (Calendar + Gmail + Drive), OpenWeather, Yahoo Finance
+
+---
+
+## Phase 4.5: Raycast Integration (COMPLETE)
+
+macOS quick capture and search via Raycast extension.
+
+- [x] Scaffold Raycast extension with TypeScript/React
+- [x] Build 5 commands: capture-thought, search-thoughts, list-thoughts, thought-stats, quick-capture
+- [x] Implement MCP JSON-RPC client for edge function communication
+- [x] Add auto-classification support via template keywords
+- [x] Clipboard and selection paste support
+- [x] Build successful (npm install + npm run build)
+- [ ] Install via `ray install`
+- [ ] Configure MCP endpoint and access key
+- [ ] Test full capture pipeline
+
+**Commands:**
+| Command | Keyword | Purpose |
+|---------|---------|---------|
+| Capture Thought | `obc` | Form-based capture with paste options |
+| Search Thoughts | `obs` | Semantic search with similarity scores |
+| List Recent | `obl` | Browse with type filters |
+| Statistics | `obst` | Dashboard: totals, topics, people |
+| Quick Capture | `obq` | Command-line instant capture |
+
+**Location:** `~/OPENBRAIN/openBrain/integrations/raycast/`
+
+**Stack:** Raycast API, TypeScript, React, MCP JSON-RPC
+
+---
+
+## Phase 4.6: AI Smart Scheduler (COMPLETE)
+
+Gemini-powered intelligent scheduling for Open Brain action items in Reclaim.ai.
+
+- [x] Create `/api/reclaim/smart-schedule` endpoint
+- [x] Fetch unscheduled actions from thoughts
+- [x] Fetch current Reclaim schedule
+- [x] Gemini prompt engineering for optimal scheduling
+- [x] Priority-based task ordering (Risk/Legal/Compliance first)
+- [x] Category-aware time blocking (Deep Work → morning)
+- [x] Two-step workflow: Preview → Apply
+- [x] UI component with reasoning display
+- [x] Auto-mark scheduled actions in Supabase
+
+**How it works:**
+1. User clicks "Preview Smart Schedule" in dashboard
+2. System fetches unscheduled action items from thoughts
+3. Gemini analyzes current calendar + task priorities
+4. Proposes optimal schedule with reasoning
+5. User reviews and clicks "Apply Schedule"
+6. Reclaim tasks created automatically
+
+**Location:** `~/OPENBRAIN/openBrain/apps/my-app/app/api/reclaim/smart-schedule/`
+
+**Stack:** Next.js API route, Gemini 2.5 Flash, Reclaim API
+
+---
+
+## Phase 4.7: Incented Integration (COMPLETE)
+
+Token-based rewards for knowledge contributions using conviction voting.
+
+- [x] Create `/api/incented/submit` endpoint
+- [x] Create `/api/incented/webhook` endpoint for voting results
+- [x] Update `ingest-thought` Edge Function with `!incented` flag support
+- [x] Create `IncentedStatus.tsx` UI component
+- [x] Auto-submit thoughts with 💰 or `!incented` flag
+- [x] Track submission status, votes, and rewards in metadata
+- [x] Slack notifications for wins
+- [x] Dashboard integration for manual submissions
+
+**How it works:**
+1. User captures thought with `!incented` or 💰 flag
+2. Thought is automatically submitted to Incented program
+3. Community votes on quality using conviction voting
+4. High-quality contributions earn token rewards
+5. Webhook updates thought metadata with results
+
+**Capture Methods:**
+```
+Slack: "Decision: Launch strategy !incented"
+Slack: "💰 Insight: New pattern for..."
+Dashboard: Click "Submit for Rewards" on any thought
+```
+
+**Location:** 
+- API: `~/OPENBRAIN/openBrain/apps/my-app/app/api/incented/`
+- UI: `~/OPENBRAIN/openBrain/apps/my-app/app/components/IncentedStatus.tsx`
+- Edge Function: `~/supabase/functions/ingest-thought/index.ts`
+
+**Stack:** Next.js API, Incented API, Supabase Edge Functions, conviction voting
 
 ---
 
@@ -397,6 +504,69 @@ unlocks: [node-id-2]  # What this enables
 
 ## Phase 15: Remote-Native Documentation Protocol (NEW - from idirnet)
 
+## Phase 16: Incented Integration (NEW - Token-Based Conviction Voting)
+
+Token-based conviction voting for incentive programs and stake-weighted decision tracking.
+
+**Source:** https://docs.incented.co/core-concepts
+
+**Core concepts:**
+- **Conviction Voting** — Vote with staked tokens; correct votes earn rewards, incorrect votes get slashed
+- **Incentive Programs** — Configured funding with award pools, voting pools, and transparent rules
+- **Stake-weighted consensus** — Important decisions require economic commitment
+
+**Pivotal insight from Incented:** "Most voting systems have no teeth. Vote wrong? Nothing happens. Incented is different. When you vote, you stake tokens — real value on the line."
+
+- [ ] Document Incented concepts and Open Brain mapping (see `docs/INCENTED-INTEGRATION.md`)
+- [ ] Extend template system with Layer 4: Incented (8 templates: Program, Submission, Vote, Cycle, Settlement, Pool, Rule, Appeal)
+- [ ] Extend metadata schema for incentive program tracking
+- [ ] Create `process-incented` Edge Function for calculations and settlements
+- [ ] Build IncentedWidget for Morning Briefing Dashboard
+- [ ] Extend MCP tools with incented queries (list programs, get details, calculate settlement)
+- [ ] Add conviction voting capture pipeline (stake recording, vote tracking, reward calculation)
+- [ ] Implement settlement trigger and reward distribution logic
+
+**Why this matters:** Economic incentives create filtering mechanisms. When decisions have consequences, people pay attention. This extends beyond incentive programs to decision accountability and reputation systems.
+
+**Location:** `~/OPENBRAIN/openBrain/docs/INCENTED-INTEGRATION.md`
+
+---
+
+## Phase 16.5: idirnet Knowledge Bounty System (NEW)
+
+Token-based incentive alignment for idirnet's knowledge capture and TSM framework.
+
+**Pivotal insight:** idirnet's 40+ network contributors need economic alignment for quality knowledge production. TSM's 21-node structure maps perfectly to bounty categories.
+
+- [ ] Deploy IDIR (award) and KNOW (voting) tokens
+- [ ] Configure bounty categories per TSM node (21 nodes)
+- [ ] Map coverage gaps to bounty multipliers (1x-3x)
+- [ ] Create 5 idirnet-specific templates (TSM Deep Dive, Literature Note, ADR, Research Synthesis, Member Profile)
+- [ ] Extend Open Brain ingest-thought with idirnet layer
+- [ ] Build MCP tools for bounty submission and settlement
+- [ ] Onboard core 5 team members
+- [ ] Expand to 10 network contributors
+- [ ] Quarterly settlement cycles
+
+**TSM + Incented Alignment:**
+| Coverage | Multiplier | Example Nodes |
+|----------|------------|---------------|
+| ✅ Complete | 1x | Ground, Runtime, Throat |
+| ⚠️ Partial | 2x | Circulation, Heart, Atmosphere |
+| ❌ Sparse | 3x | Root, Sacral, Gesture, Feedback Loop |
+
+**Knowledge Flow Pipeline:**
+```
+Capture (Open Brain) → Develop (idirnet) → Submit (Incented) → 
+Review (Distributed) → Settle (Monthly) → Publish (CODEX)
+```
+
+**Why this matters:** Knowledge work lacks objective quality signals. Conviction voting with economic stakes creates filtering without centralized gatekeeping. The 40+ network becomes economically aligned: quality contributions earn IDIR, quality reviews earn KNOW, reputation unlocks higher voting weight.
+
+**Location:** `~/OPENBRAIN/openBrain/docs/INCENTED-IDIRNET-INTEGRATION.md`
+
+## Phase 15: Remote-Native Documentation Protocol (NEW - from idirnet)
+
 Documentation-first, async-by-default communication patterns for distributed teams.
 
 **Pivotal insight from idirnet:** Remote-native teams (like open source projects) operate differently than office teams forced remote. Documentation is primary; meetings are secondary. Decisions are recorded; rationale is preserved.
@@ -438,11 +608,24 @@ consequences:
 
 ## Deploy Checklist
 
-### Pending now
+### Production Status
 ```
 ✅ ingest-thought - deployed
 ✅ meeting-notes - deployed
+⏳ open-brain-mcp - ready, deploy pending
+⏳ schedule-actions - ready, deploy pending
+⏳ Raycast extension - built, install pending
+🔴 Dashboard - blocked (missing env vars)
 ```
+
+### Critical Blockers
+1. **Dashboard env vars** — Add to `apps/my-app/.env.local`:
+   - NEXT_PUBLIC_SUPABASE_ANON_KEY
+   - SUPABASE_SERVICE_ROLE_KEY
+   
+2. **MCP_ACCESS_KEY** — Document setup in Supabase secrets
+
+3. **Edge function deployment** — Run `supabase functions deploy` for all 4 functions
 
 ### After each phase build
 ```bash

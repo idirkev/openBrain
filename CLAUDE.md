@@ -1,6 +1,6 @@
 # Open Brain — Agent Instructions
 
-Last Updated: March 17, 2026
+Last Updated: March 17, 2026 (Session End)
 
 ## What This Is
 
@@ -12,6 +12,7 @@ Open Brain is a personal and team knowledge capture system built on Supabase, Ed
 2. Read project memory at `~/.claude/projects/-Users-kevfreeney-OPENBRAIN-openBrain/memory/MEMORY.md`
 3. Read `docs/DATA-INTAKE-ARCHITECTURE.md` — how data enters
 4. Read `docs/TSM-ORGANIZATIONAL-FRAMEWORK.md` — how data is organized
+5. Read `docs/INCENTED-INTEGRATION.md` — token-based conviction voting concepts
 
 ## Folder Structure
 
@@ -19,10 +20,13 @@ Open Brain is a personal and team knowledge capture system built on Supabase, Ed
 openBrain/
   CLAUDE.md              <- This file. Agent routing.
   ROADMAP.md             <- Living roadmap. 15 phases.
+  PROGRESS_LOG.md        <- Session-by-session progress tracking
   docs/                  <- Architecture docs
   prompts/               <- Agent prompts for pipeline steps
   apps/my-app/           <- Morning Briefing Dashboard (Next.js)
+  integrations/raycast/  <- macOS Raycast extension (5 commands)
   scripts/               <- CLI tools, pipeline launcher
+  captures/              <- AI session logs, TSM mappings
   archive/               <- Historical docs (pre-v2 consolidation)
 
 ~/supabase/functions/    <- Edge Functions
@@ -49,11 +53,12 @@ openBrain/
 
 | Service | Status |
 |---------|--------|
-| Slack #log → ingest-thought | Active |
-| Google Meet → Apps Script → meeting-notes | Active |
-| Reclaim.ai → schedule-actions | Active |
-| OpenWeather, Yahoo Finance, Good News RSS | Active |
-| Claude Code MCP (4 tools) | Active |
+| Slack #log → ingest-thought | ✅ Active |
+| Google Meet → Apps Script → meeting-notes | ✅ Active |
+| Reclaim.ai → schedule-actions | ✅ Active |
+| OpenWeather, Yahoo Finance, Good News RSS | ✅ Active |
+| Claude Code MCP (4 tools) | ✅ Active |
+| Raycast Extension (obc, obs, obl, obst, obq) | ⏳ Built, install pending |
 
 ## Template System (19 Templates, 3 Layers)
 
@@ -72,6 +77,19 @@ Leading keyword triggers classification.
 | Architect/Reviewer | Claude Opus 4.6 | Architecture decisions, code review |
 | Builder | Claude Sonnet 4.6 | All implementation |
 | Quality gate | Codex CLI | Post-build review |
+
+### Opus → Sonnet Handoff
+
+When Opus makes architecture decisions that Sonnet implements:
+
+**Opus MUST provide:**
+1. **The Decision** — What to build, why, priority
+2. **Constraints** — Stack, location, interface, non-goals
+3. **Success Criteria** — How to verify it's correct
+4. **Rationale** — Why this decision (prevents re-deciding)
+5. **References** — MUST READ vs DO NOT READ
+
+**See:** `docs/OPUS-TO-SONNET-HANDOFF.md` for complete protocol
 
 ## Deploy
 
@@ -98,4 +116,22 @@ supabase functions deploy open-brain-mcp
 | Database schema | `~/supabase/migrations/` |
 | Architecture docs | `docs/` directory |
 | Agent prompts | `prompts/` directory |
-| Archived docs | `archive/` directory |
+| Progress tracking | `PROGRESS_LOG.md` |
+| Raycast extension | `integrations/raycast/` |
+| Install Raycast | `cd integrations/raycast && ray install` |
+| Run pipeline | `./scripts/pipeline.sh --task "description"` |
+
+---
+
+## Related Documentation
+
+| Document | Purpose |
+|----------|---------|
+| `docs/DATA-INTAKE-ARCHITECTURE.md` | How information enters the system |
+| `docs/TSM-ORGANIZATIONAL-FRAMEWORK.md` | TSM organizational framework |
+| `docs/INCENTED-INTEGRATION.md` | Core Incented concepts |
+| `docs/INCENTED-IDIRNET-INTEGRATION.md` | Incented + idirnet knowledge capture |
+| `docs/CLAUDE-CODE-FEEDBACK-PLAN.md` | Handling feedback from Claude Code |
+| `docs/OPUS-TO-SONNET-HANDOFF.md` | What Opus must provide to Sonnet |
+| `ROADMAP.md` | 16-phase development roadmap |
+| `PROJECT_STATUS.md` | Current system status |
