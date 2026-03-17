@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format, parseISO } from 'date-fns'
-import { Calendar, Clock, CheckCircle, AlertCircle } from 'lucide-react'
+import { Calendar, Clock, CheckCircle, AlertCircle, Sparkles } from 'lucide-react'
+import { SmartScheduleButton } from './SmartScheduleButton'
 
 interface ReclaimTask {
   id: string
@@ -193,6 +194,16 @@ export function ReclaimSchedule() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Smart Schedule with Gemini */}
+        {data.unscheduled.length > 0 && (
+          <SmartScheduleButton onSuccess={() => {
+            // Refresh data after scheduling
+            fetch('/api/reclaim')
+              .then(r => r.ok ? r.json() : null)
+              .then(newData => newData && setData(newData))
+          }} />
         )}
 
         {/* Unscheduled Actions */}

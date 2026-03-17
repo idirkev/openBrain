@@ -47,8 +47,8 @@ export async function GET() {
         mentions: data.count,
         latestTopic: data.latest.content.substring(0, 80) + '...'
       })),
-      // Placeholder for Gemini integration
-      geminiBrief: null // Will be populated when Gemini Gem is configured
+      // Gemini integration endpoint (separate call from client)
+      geminiEndpoint: '/api/gemini-brief'
     })
   } catch (error) {
     console.error('Briefing fetch error:', error)
