@@ -3,9 +3,7 @@ import { NextResponse } from 'next/server'
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''
 const RECLAIM_API_KEY = process.env.RECLAIM_API_KEY || ''
 const MCP_ACCESS_KEY = process.env.MCP_ACCESS_KEY || ''
-const SUPABASE_FUNCTIONS_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1`
-  : 'https://jeuxslbhjubxmhtzpvqf.supabase.co/functions/v1'
+const SUPABASE_FUNCTIONS_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1`
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
 
 interface ActionItem {

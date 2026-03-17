@@ -4,6 +4,7 @@
  */
 
 // Open Brain configuration
+// TODO: Configure supabaseUrl with your own Supabase project URL before deploying
 const OB_CONFIG = {
   supabaseUrl: 'https://jeuxslbhjubxmhtzpvqf.supabase.co',
   mcpAccessKey: PropertiesService.getScriptProperties().getProperty('OB_MCP_ACCESS_KEY'),

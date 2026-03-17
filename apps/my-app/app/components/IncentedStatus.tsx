@@ -26,7 +26,7 @@ interface IncentedStatusProps {
 export function IncentedStatus({ 
   thoughtId, 
   metadata, 
-  programId = '7b4cd3fb-63c4-40c2-8ede-4175ca6e1ac5',
+  programId = process.env.NEXT_PUBLIC_INCENTED_PROGRAM_ID || '',
   onSubmit 
 }: IncentedStatusProps) {
   const [submitting, setSubmitting] = useState(false)

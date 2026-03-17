@@ -377,10 +377,10 @@ function WeatherWidget() {
       </div>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-2xl font-bold text-gray-900">{Math.round(weather.main?.temp || 0)}°C</p>
-          <p className="text-sm text-gray-500">{weather.name}</p>
+          <p className="text-2xl font-bold text-gray-900">{weather.temp}°C</p>
+          <p className="text-sm text-gray-500">{weather.location}</p>
         </div>
-        <p className="text-sm text-gray-600 capitalize">{weather.weather?.[0]?.description}</p>
+        <p className="text-sm text-gray-600 capitalize">{weather.description}</p>
       </div>
     </Card>
   )
@@ -410,11 +410,11 @@ function FinanceTicker() {
         <h3 className="text-sm font-semibold text-gray-900">Clean Energy</h3>
       </div>
       <div className="space-y-2">
-        {data.slice(0, 3).map((ticker: any, i: number) => (
+        {(data.tickers || []).slice(0, 3).map((item: any, i: number) => (
           <div key={i} className="flex items-center justify-between text-sm">
-            <span className="font-medium text-gray-700">{ticker.symbol}</span>
-            <span className={ticker.change >= 0 ? 'text-green-600' : 'text-red-600'}>
-              {ticker.change >= 0 ? '+' : ''}{ticker.changePercent?.toFixed(2)}%
+            <span className="font-medium text-gray-700">{item.ticker}</span>
+            <span className={Number(item.change) >= 0 ? 'text-green-600' : 'text-red-600'}>
+              {Number(item.change) >= 0 ? '+' : ''}{item.changePercent}%
             </span>
           </div>
         ))}
@@ -431,7 +431,7 @@ function NewsFeed() {
     fetch('/api/news')
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        setNews(data?.slice(0, 3) || [])
+        setNews(data?.articles?.slice(0, 3) || [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
