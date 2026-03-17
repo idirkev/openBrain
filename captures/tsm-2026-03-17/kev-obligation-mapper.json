@@ -1,0 +1,434 @@
+{
+  "member": {
+    "name": "Kev",
+    "role": "Systems Architect / Technical Director / Founder",
+    "skills": [
+      "System Architecture",
+      "Full-stack Development",
+      "AI/ML Integration",
+      "Organizational Design",
+      "Knowledge Management",
+      "Creative Technology",
+      "Technical Writing",
+      "Community Building"
+    ],
+    "current_projects": [
+      "Open Brain (knowledge capture system)",
+      "idirnet v2 (network platform)",
+      "NCAD Digital Infrastructure",
+      "Raycast/Claude/AI Tool Integrations",
+      "Documentation & Workflow Systems"
+    ]
+  },
+  "tsm_mapping": [
+    {
+      "node": "Cognitive Architecture",
+      "layer": 1,
+      "layer_name": "Internal Stack",
+      "weight": 9,
+      "obligation": "Maintain mental models that accurately represent system complexity while preserving creative capacity. Responsible for the integrity of personal sense-making apparatus.",
+      "task_types": [
+        {
+          "task": "Weekly reflection journaling on system patterns",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "low"
+        },
+        {
+          "task": "Mental model documentation in Open Brain",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Attention audit - tracking where cognitive load is spent",
+          "complexity": 2,
+          "recurrence": "daily",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Deep work session protection (4hr blocks)",
+          "complexity": 2,
+          "recurrence": "daily",
+          "verifiability": "high"
+        }
+      ]
+    },
+    {
+      "node": "Affective Regulation",
+      "layer": 1,
+      "layer_name": "Internal Stack",
+      "weight": 7,
+      "obligation": "Maintain emotional capacity to sustain long-term projects without burnout. Steward personal energy as organizational resource.",
+      "task_types": [
+        {
+          "task": "Morning intention setting ritual",
+          "complexity": 1,
+          "recurrence": "daily",
+          "verifiability": "high"
+        },
+        {
+          "task": "End-of-day closure ceremony",
+          "complexity": 1,
+          "recurrence": "daily",
+          "verifiability": "high"
+        },
+        {
+          "task": "Burnout indicator monitoring",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "low"
+        },
+        {
+          "task": "Recovery day scheduling and protection",
+          "complexity": 2,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        }
+      ]
+    },
+    {
+      "node": "Perceptual Agency",
+      "layer": 1,
+      "layer_name": "Internal Stack",
+      "weight": 6,
+      "obligation": "Develop and maintain sensory interfaces with digital systems. Ensure embodied interaction with technology.",
+      "task_types": [
+        {
+          "task": "Tactile interface evaluation (hardware/tools)",
+          "complexity": 3,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Visual environment optimization (workspace)",
+          "complexity": 2,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "Auditory landscape management (noise, alerts)",
+          "complexity": 2,
+          "recurrence": "daily",
+          "verifiability": "medium"
+        }
+      ]
+    },
+    {
+      "node": "Knowledge Systems",
+      "layer": 2,
+      "layer_name": "External Stack",
+      "weight": 10,
+      "obligation": "Design, build, and maintain Open Brain as organizational memory. Ensure knowledge capture is frictionless and retrieval is semantic.",
+      "task_types": [
+        {
+          "task": "Edge function deployment and monitoring",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "Database migration execution",
+          "complexity": 5,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "MCP tool functionality verification",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "Capture pipeline testing (Raycast, Claude, Kimi)",
+          "complexity": 4,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "Knowledge architecture documentation",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        }
+      ]
+    },
+    {
+      "node": "Interface Design",
+      "layer": 2,
+      "layer_name": "External Stack",
+      "weight": 8,
+      "obligation": "Create boundary objects that mediate between human cognition and system complexity. Dashboards, CLI tools, and integrations.",
+      "task_types": [
+        {
+          "task": "Next.js dashboard component development",
+          "complexity": 4,
+          "recurrence": "daily",
+          "verifiability": "high"
+        },
+        {
+          "task": "Raycast extension feature implementation",
+          "complexity": 3,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "CLI tool scripting (pipeline.sh, ob commands)",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "API route development and testing",
+          "complexity": 4,
+          "recurrence": "daily",
+          "verifiability": "high"
+        }
+      ]
+    },
+    {
+      "node": "Ritual Systems",
+      "layer": 2,
+      "layer_name": "External Stack",
+      "weight": 7,
+      "obligation": "Establish repeatable practices that reduce cognitive overhead. Daily briefing, weekly review, pipeline executions.",
+      "task_types": [
+        {
+          "task": "Daily briefing review (automated + manual)",
+          "complexity": 2,
+          "recurrence": "daily",
+          "verifiability": "high"
+        },
+        {
+          "task": "Weekly pipeline execution",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "Monthly system audit (Agent 1 report)",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Capture ritual maintenance (templates, prompts)",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "medium"
+        }
+      ]
+    },
+    {
+      "node": "Community Engagement",
+      "layer": 2,
+      "layer_name": "External Stack",
+      "weight": 8,
+      "obligation": "Maintain relationships with collaborators, users, and stakeholders. idirnet network cultivation.",
+      "task_types": [
+        {
+          "task": "idirnet member onboarding",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "NCAD faculty/staff coordination",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Documentation for external users",
+          "complexity": 3,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Feedback integration from community",
+          "complexity": 4,
+          "recurrence": "weekly",
+          "verifiability": "low"
+        }
+      ]
+    },
+    {
+      "node": "Workflow Automation",
+      "layer": 2,
+      "layer_name": "External Stack",
+      "weight": 9,
+      "obligation": "Build systems that reduce manual overhead. Pipeline scripts, scheduled actions, integration orchestration.",
+      "task_types": [
+        {
+          "task": "pipeline.sh maintenance and extension",
+          "complexity": 4,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "Agent script updates (kimi-agent.sh, gemini-agent.sh)",
+          "complexity": 3,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "Supabase scheduled job configuration",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "Edge function deployment automation",
+          "complexity": 5,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        }
+      ]
+    },
+    {
+      "node": "Documentation Architecture",
+      "layer": 2,
+      "layer_name": "External Stack",
+      "weight": 8,
+      "obligation": "Maintain living documentation that enables others to understand and contribute. HANDOVER.md, AGENTS.md, ROADMAP.md.",
+      "task_types": [
+        {
+          "task": "HANDOVER.md updates after major changes",
+          "complexity": 3,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Migration guide maintenance",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Code comment and README updates",
+          "complexity": 2,
+          "recurrence": "daily",
+          "verifiability": "high"
+        },
+        {
+          "task": "Architecture decision records (ADRs)",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        }
+      ]
+    },
+    {
+      "node": "AI Infrastructure",
+      "layer": 3,
+      "layer_name": "Planetary Stack",
+      "weight": 9,
+      "obligation": "Leverage and configure planetary-scale AI systems (Claude, Kimi, Gemini, OpenRouter) as cognitive extensions.",
+      "task_types": [
+        {
+          "task": "Model selection and evaluation for tasks",
+          "complexity": 4,
+          "recurrence": "weekly",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Prompt engineering and template refinement",
+          "complexity": 4,
+          "recurrence": "daily",
+          "verifiability": "medium"
+        },
+        {
+          "task": "API integration maintenance (OpenRouter, Supabase)",
+          "complexity": 4,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "AI agent workflow design",
+          "complexity": 5,
+          "recurrence": "milestone",
+          "verifiability": "low"
+        },
+        {
+          "task": "Cost monitoring and optimization",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        }
+      ]
+    },
+    {
+      "node": "Data Sovereignty",
+      "layer": 3,
+      "layer_name": "Planetary Stack",
+      "weight": 8,
+      "obligation": "Maintain control over knowledge data while using cloud infrastructure. Supabase ownership, backup strategies, RLS policies.",
+      "task_types": [
+        {
+          "task": "Database backup verification",
+          "complexity": 3,
+          "recurrence": "weekly",
+          "verifiability": "high"
+        },
+        {
+          "task": "RLS policy audit",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "Data export and migration testing",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "Access key rotation",
+          "complexity": 3,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        }
+      ]
+    },
+    {
+      "node": "Protocol Design",
+      "layer": 3,
+      "layer_name": "Planetary Stack",
+      "weight": 7,
+      "obligation": "Design interoperability standards that work across planetary infrastructure. MCP, JSON-RPC, API contracts.",
+      "task_types": [
+        {
+          "task": "MCP protocol implementation",
+          "complexity": 5,
+          "recurrence": "milestone",
+          "verifiability": "high"
+        },
+        {
+          "task": "API contract definition",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        },
+        {
+          "task": "Integration specification docs",
+          "complexity": 4,
+          "recurrence": "milestone",
+          "verifiability": "medium"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_nodes_assigned": 12,
+    "layer_1_count": 3,
+    "layer_2_count": 6,
+    "layer_3_count": 3,
+    "highest_weight_nodes": [
+      "Knowledge Systems (10)",
+      "Cognitive Architecture (9)",
+      "Workflow Automation (9)",
+      "AI Infrastructure (9)"
+    ],
+    "primary_focus": "Layer 2 (External Stack) - Systems and interfaces that mediate between personal cognition and planetary infrastructure"
+  }
+}
