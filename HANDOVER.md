@@ -150,7 +150,7 @@ capture_thought("Decision: Launch strategy")
 
 # Via curl
 curl -s "https://jeuxslbhjubxmhtzpvqf.supabase.co/functions/v1/open-brain-mcp" \
-  -H "x-brain-key: 91375beb3df1c34169a802c11d1195cf7d65a10886896152f58c20dd5344128a" \
+  -H "x-brain-key: <MCP_ACCESS_KEY>" \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"thought_stats","arguments":{}}}'
 ```

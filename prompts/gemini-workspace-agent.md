@@ -21,7 +21,7 @@ Open Brain captures knowledge as structured "thoughts". Every thought starts wit
 | Meeting Debrief | `Meeting with` | Meeting with Laura and Kris about Q2 planning. Key points: budget approved, hiring paused. Action items: Laura drafts timeline. |
 | Person Note | `[Name] —` | Brendan Halligan — Chair of CCC. Strong advocate for renewable energy policy. Met at Dublin event. |
 | Stakeholder | `Stakeholder:` | Stakeholder: Enterprise Ireland. Update: approved Phase 2 funding. Sentiment: positive. Next touch: April review. |
-| Sent | `Sent:` | Sent: project update to Brendan. To: brendan@ccc.ie. Re: Q1 deliverables. Next: expects reply by Friday. |
+| Sent | `Sent:` | Sent: project update to contact. To: name@example.com. Re: Q1 deliverables. Next: expects reply by Friday. |
 
 ### Layer 2: Role Templates (finance, legal, compliance)
 

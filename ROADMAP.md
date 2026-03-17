@@ -277,7 +277,7 @@ Automated inbox scanning for action items, deadlines, and correspondence.
 
 **Architecture:**
 ```
-Gmail (kev@idirnet.com)
+Gmail (primary inbox)
     |
     v (Gemini Gem: Email Triage -- classifies, extracts, structures)
     |

@@ -45,3 +45,23 @@ out/
 *.pem
 *.cert
 *.key
+
+# Google OAuth Secrets - NEVER COMMIT THESE
+client_secrets.json
+*client_secret*.json
+*.credentials.json
+credentials.json
+~/.secrets/
+.google/
+
+# Supabase secrets
+.supabase/secrets.toml
+
+# Personal captures (private profiling data)
+captures/
+
+# Additional env variants
+.env.production
+.env.development
+.env.test
+.envrc

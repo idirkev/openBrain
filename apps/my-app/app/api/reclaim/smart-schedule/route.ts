@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''
 const RECLAIM_API_KEY = process.env.RECLAIM_API_KEY || ''
+const MCP_ACCESS_KEY = process.env.MCP_ACCESS_KEY || ''
+const SUPABASE_FUNCTIONS_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1`
+  : 'https://jeuxslbhjubxmhtzpvqf.supabase.co/functions/v1'
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
 
 interface ActionItem {
@@ -27,8 +31,8 @@ interface ScheduledTask {
 async function getUnscheduledActions(): Promise<ActionItem[]> {
   try {
     const response = await fetch(
-      'https://jeuxslbhjubxmhtzpvqf.supabase.co/functions/v1/schedule-actions?key=91375beb3df1c34169a802c11d1195cf7d65a10886896152f58c20dd5344128a',
-      { headers: { 'x-brain-key': '91375beb3df1c34169a802c11d1195cf7d65a10886896152f58c20dd5344128a' } }
+      `${SUPABASE_FUNCTIONS_URL}/schedule-actions`,
+      { headers: { 'x-brain-key': MCP_ACCESS_KEY } }
     )
     if (!response.ok) return []
     const data = await response.json()
