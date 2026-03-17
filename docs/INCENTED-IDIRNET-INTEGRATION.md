@@ -6,6 +6,21 @@
 
 ---
 
+## Related idirnet Documentation
+
+This document integrates with existing idirnet Incented documentation:
+
+| Document | Location | Purpose |
+|----------|----------|---------|
+| `incented-integration-summary.md` | `idirnet_ROOT/content/knowledge/notes/` | Core Incented concepts for idirnet |
+| `incented-tsm-mapping.md` | `idirnet_ROOT/content/knowledge/notes/` | Detailed TSM node bounty mapping (15 nodes) |
+| `token-curation-incentives.md` | `idirnet_ROOT/content/knowledge/notes/` | Token incentive structures and parameters |
+| `submission-tracking-lifecycle.md` | `idirnet_ROOT/content/knowledge/notes/` | Submission workflow and lifecycle |
+
+**id Projects Dashboard Reference:** [`idirnet_PROJECTS_MAP.md`](idirnet_ROOT/content/knowledge/notes/idirnet_PROJECTS_MAP.md)
+
+---
+
 ## Overview
 
 idirnet operates as a knowledge-intensive creative organization using the Triple Stack Model (TSM) framework. The challenge: how do we incentivize quality knowledge contributions from 5 core team members + 40+ network collaborators across 21 TSM nodes?
@@ -98,6 +113,131 @@ Each TSM node becomes a bounty category. Coverage gaps identified through TSM da
 - ✅ Complete = 3+ permanent notes, 1+ deep dive
 - ⚠️ Partial = 1-2 permanent notes
 - ❌ Sparse = No permanent notes yet
+
+### TSM-Incented Architecture
+
+The Incented system spans all three TSM stacks:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         TSM + INCENTED ARCHITECTURE                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
+│  │                         GLOBAL STACK                                 │     │
+│  │                    (Program & Infrastructure)                        │     │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │  BOUNTY POOL MANAGEMENT  │  INCENTIVE STRUCTURES  │  GOVERNANCE      │     │
+│  │  • IDIR/KNOW allocation  │  • Award curves        │  • Voting tiers  │     │
+│  │  • Monthly settlement    │  • Review rewards      │  • Slashing      │     │
+│  │  • Prize pool funding    │  • Multiplier rules    │  • Dispute       │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
+│                                      │                                        │
+│                                      ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
+│  │                         INTERNAL STACK                               │     │
+│  │                    (Contributor Experience)                          │     │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │  SUBMISSION WORKFLOW     │  REVIEWER WORKFLOW      │  REPUTATION     │     │
+│  │  • Draft → Submit → Lock │  • Stake → Vote → Claim │  • Score calc   │     │
+│  │  • Template validation   │  • Conviction voting    │  • Tier levels  │     │
+│  │  • Self-review required  │  • Accuracy tracking    │  • Weight decay │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
+│                                      │                                        │
+│                                      ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
+│  │                         EXTERNAL STACK                               │     │
+│  │                    (Output & Recognition)                            │     │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │  WINNER RECOGNITION      │  KNOWLEDGE PUBLISHING   │  NETWORK GROWTH  │     │
+│  │  • Prize distribution    │  • CODEX integration    │  • Member invites│     │
+│  │  • Contributor badges    │  • Permanent notes      │  • Reputation    │     │
+│  │  • Leaderboards          │  • Cross-linking        │  • Onboarding    │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
+│                                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Three Core Incented Components
+
+Based on idirnet's integration design:
+
+### 1. Voter Incentives (KNOW Token)
+
+**Purpose:** Motivate high-quality, thoughtful review of knowledge submissions
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| **Base stake per vote** | 10 KNOW | Significant enough to matter, not prohibitive |
+| **Correct vote reward** | 15 KNOW (1.5x) | 50% profit margin for accuracy |
+| **Slashing penalty** | 5 KNOW (50%) | Loss aversion: losing half stings more than winning half |
+| **Voting period** | 7 days | Enough time for thorough review |
+| **Minimum voters** | 5 per submission | Statistical significance |
+
+**Voting Tiers (Reputation Multipliers):**
+
+```typescript
+const VOTING_TIERS = {
+  core:      { multiplier: 1.5,  min_accuracy: 0.85, min_reviews: 20 },
+  network:   { multiplier: 1.2,  min_accuracy: 0.75, min_reviews: 10 },
+  active:    { multiplier: 1.0,  min_accuracy: 0.65, min_reviews: 5 },
+  holders:   { multiplier: 0.8,  min_accuracy: 0.50, min_reviews: 0 }
+};
+```
+
+### 2. Submission Tracking Lifecycle
+
+**Status Flow:**
+
+```
+DRAFT → SUBMITTED → IN_REVIEW → [SELECTED | NOT_SELECTED] → [SETTLED | CLAIMED]
+                                              ↓
+                                        DISPUTED → ARBITRATION
+```
+
+| Status | Description | Duration |
+|--------|-------------|----------|
+| `DRAFT` | Creator editing, not yet finalized | Unlimited |
+| `SUBMITTED` | Locked for review, stake required to unlock | 7 days |
+| `IN_REVIEW` | Under active voting | 7 days |
+| `SELECTED` | Top submissions for the cycle | Immediate |
+| `NOT_SELECTED` | Did not make top tier | Immediate |
+| `SETTLED` | Rewards distributed, on-chain recorded | Monthly |
+| `CLAIMED` | Winner has withdrawn funds | Post-settlement |
+| `DISPUTED` | Challenge raised, under arbitration | +3 days |
+
+### 3. Program Management (IDIR Token)
+
+**Award Pool Distribution (Monthly):**
+
+```
+┌────────────────────────────────────────────────────────┐
+│           MONTHLY IDIR AWARD POOL (~50,000)            │
+├────────────────────────────────────────────────────────┤
+│  Top Winner:        30%  (~15,000 IDIR)               │
+│  2nd Place:         20%  (~10,000 IDIR)               │
+│  3rd Place:         15%  (~7,500 IDIR)                │
+│  4th Place:         10%  (~5,000 IDIR)                │
+│  5th Place:          8%  (~4,000 IDIR)                │
+│  Reviewer Rewards:  12%  (~6,000 IDIR)                │
+│  Program Reserve:    5%  (~2,500 IDIR)                │
+└────────────────────────────────────────────────────────┘
+```
+
+**Coverage-Driven Multipliers:**
+
+```typescript
+const COVERAGE_MULTIPLIERS = {
+  complete:  1.0,   // ✅ 3+ notes exist
+  partial:   1.5,   // ⚠️ 1-2 notes exist
+  sparse:    2.0    // ❌ No notes yet
+};
+
+// Example: TSM Deep Dive for "Gesture" node (sparse coverage)
+// Base award: 15,000 IDIR × 2.0 multiplier = 30,000 IDIR
+```
 
 ---
 
@@ -587,15 +727,103 @@ The 40+ network becomes economically aligned:
 
 ---
 
+## Workflow Example: TSM Node Bounty
+
+**Scenario:** New contributor "Jordan" discovers idirnet and wants to contribute
+
+```
+WEEK 1: Discovery & Preparation
+─────────────────────────────────────────────────────────────
+Day 1   Jordan explores TSM graph, notices "Gesture" node is sparse
+Day 2   Reads existing documentation on Portal, Mirror nodes
+Day 3   Researches academic sources on embodied interaction
+Day 4   Drafts TSM Deep Dive using template
+Day 5   Self-review against award criteria checklist
+Day 6   Finalizes, locks submission (100 KNOW stake required)
+Day 7   Submission enters IN_REVIEW status
+
+WEEK 2: Review & Voting
+─────────────────────────────────────────────────────────────
+Day 8   5 network members begin reviewing (stake 10 KNOW each)
+Day 9   Conviction votes accumulate: 3 FOR, 1 AGAINST, 1 ABSTAIN
+Day 10  Reviewer discussion on Discord #incented-review
+Day 11  Vote momentum shifts toward FOR
+Day 12  Final votes tallied
+Day 13  Voting closes, Jordan's submission SELECTED
+Day 14  Submissions aggregated for monthly settlement
+
+WEEK 3: Settlement & Recognition
+─────────────────────────────────────────────────────────────
+Day 15  Monthly settlement: Jordan's submission ranks #2
+Day 16  Award calculation: 10,000 IDIR × 2.0 coverage = 20,000 IDIR
+Day 17  Rewards distributed on-chain
+Day 18  Winning submission published to CODEX
+Day 19  Jordan receives "TSM Contributor" Discord badge
+Day 20  Jordan's reputation score increases (+50 points)
+Day 21  Jordan invited to #core-contributors channel
+
+WEEK 4: Ongoing Engagement
+─────────────────────────────────────────────────────────────
+Day 22  Jordan stakes KNOW to review next cycle's submissions
+Day 23  Jordan votes on 3 submissions, achieves 2/3 accuracy
+Day 24  Jordan earns 30 KNOW from correct votes (receives 15, loses 5)
+Day 25  Jordan begins second TSM Deep Dive on "Feedback Loop"
+Day 26  Jordan refers colleague Alex to join network
+Day 27  Alex submits first Literature Note
+Day 28  New cycle begins...
+```
+
+---
+
+## Implementation Roadmap
+
+### Month 1: Foundation
+| Week | Task | Owner | Output |
+|------|------|-------|--------|
+| 1 | Token contract deployment (IDIR, KNOW) | Dev | Contracts on Solana devnet |
+| 2 | Multisig setup (Safe/Squads) | Kev/Laura | 3-of-5 wallet configured |
+| 3 | Bounty program launch announcement | Comms | Discord announcement, email |
+| 4 | Template finalization | Content | 5 templates in `/templates/` |
+
+### Month 2: Pilot Program
+| Week | Task | Owner | Output |
+|------|------|-------|--------|
+| 5 | First submission cycle opens | Ops | 10+ submissions received |
+| 6 | Reviewer onboarding | Community | 15+ active reviewers |
+| 7 | First voting cycle | Community | 5+ submissions selected |
+| 8 | First settlement & retrospectives | All | Lessons learned documented |
+
+### Month 3: Scaling
+| Week | Task | Owner | Output |
+|------|------|-------|--------|
+| 9 | Program refinements based on feedback | Ops | Updated parameters |
+| 10 | Integration with CODEX pipeline | Dev | Automated publishing |
+| 11 | Cross-project bounties (Lightheart collaboration) | Partnerships | Joint bounty program |
+| 12 | Quarterly review & roadmap update | All | Q2 plan finalized |
+
+---
+
 ## Related Documents
 
+### Open Brain Documentation
 | Document | Purpose |
 |----------|---------|
 | `docs/INCENTED-INTEGRATION.md` | Core Incented concepts |
 | `docs/TSM-ORGANIZATIONAL-FRAMEWORK.md` | TSM structure |
 | `docs/DATA-INTAKE-ARCHITECTURE.md` | Open Brain capture flow |
-| `idirnet/content/docs/tsm-framework.md` | Full TSM documentation |
+
+### idirnet Content Documentation
+| Document | Location | Purpose |
+|----------|----------|---------|
+| `incented-integration-summary.md` | `content/knowledge/notes/` | Core Incented integration concepts |
+| `incented-tsm-mapping.md` | `content/knowledge/notes/` | Detailed TSM node mapping (15 nodes) |
+| `token-curation-incentives.md` | `content/knowledge/notes/` | Token incentive structures |
+| `submission-tracking-lifecycle.md` | `content/knowledge/notes/` | Submission workflow |
+| `idirnet_PROJECTS_MAP.md` | `content/knowledge/notes/` | Active project tracking |
+| `tsm-framework.md` | `content/docs/` | Full TSM documentation |
 
 ---
 
 *Integrated for idirnet knowledge capture flow — March 17, 2026*
+
+**Version:** 1.1 (Aligned with idirnet content knowledge base)
