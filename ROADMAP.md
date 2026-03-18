@@ -1,6 +1,6 @@
 # Open Brain Roadmap
 
-Last updated: 2026-03-17
+Last updated: 2026-03-18
 
 ---
 
@@ -8,10 +8,10 @@ Last updated: 2026-03-17
 
 | | |
 |:---|:---|
-| **Date** | March 17, 2026 |
-| **Phase** | v2 Readiness (Raycast Integration Complete) |
-| **Branch** | `v2` active, integration branch for Raycast |
-| **Next** | Deploy edge functions + dashboard env fix |
+| **Date** | March 18, 2026 |
+| **Phase** | v2 Readiness (Dashboard + G Suite Integration) |
+| **Branch** | `main` (v2 merged) |
+| **Next** | LINK interactive graph prototype, Raycast install |
 
 **Recent Completions — 2026-03-17:**
 - ✅ System State Audit (Agent 1): 4 edge functions, 7 migrations verified
@@ -28,10 +28,10 @@ Last updated: 2026-03-17
 - D5: idirnet portal (176K files) left in place, patterns already extracted
 - D6: Immediate actions executed (archive, baseline, commit b97fcc7, v2 branch)
 
-**Critical Blockers:**
-1. 🔴 Dashboard build fails (missing NEXT_PUBLIC_SUPABASE_ANON_KEY)
-2. 🟡 Edge functions deployment status unknown
-3. 🟡 MCP_ACCESS_KEY setup undocumented
+**Critical Blockers:** All resolved (2026-03-17)
+1. ~~🔴 Dashboard build fails~~ → ✅ Resolved via `.env.local`
+2. ~~🟡 Edge functions deployment status unknown~~ → ✅ All 4 functions ACTIVE
+3. ~~🟡 MCP_ACCESS_KEY setup undocumented~~ → ✅ Confirmed working
 
 **TSM Status:** 9/12 obligations fulfilled (75%)
 - L1 Internal: 3/3 ✅
