@@ -271,7 +271,7 @@ critical_path_position: "#3 of 12"
 ## Files Created/Updated
 
 ### Updated
-- `~/OPENBRAIN/openBrain/ROADMAP.md` — Added Phases 9-15
+- `~/OPENBRAIN/openBrain/docs/status/ROADMAP.md` — Added Phases 9-15
 
 ### Created
 - `~/OPENBRAIN/openBrain/PLAYBOOK.md` — Field guide for knowledge capture, organization, and action
