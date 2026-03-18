@@ -155,7 +155,7 @@ Expanded from 8 to 19 templates across 3 layers.
 
 ### 3.4 PDF Knowledge Inventory
 
-**9 Converted:**
+**12 Converted:**
 - DELIVERABLES_1_8_9_FINAL.pdf → deliverables-1-8-9-final.md
 - DELIVERABLES_6_7_IP_GOVERNANCE.pdf → deliverables-6-7-ip-governance.md
 - IDIRNET_LIGHTHEART_COMPLETE_ANALYSIS.pdf → idirnet-lightheart-complete-analysis.md
@@ -163,11 +163,11 @@ Expanded from 8 to 19 templates across 3 layers.
 - Square Roots Report → square-roots-report.md
 - Budgeting For Immersive R&D Lab → budgeting-immersive-rnd-lab.md
 - EU AV Action Plan → eu-audiovisual-action-plan.md
+- **DELIVERABLE_2_OPTIONS.pdf → [deliverable-2-options.md](../content/knowledge/notes/deliverable-2-options.md)** ⭐ *NEW*
+- **DELIVERABLE_3_RETAINER.pdf → [deliverable-3-retainer.md](../content/knowledge/notes/deliverable-3-retainer.md)** ⭐ *NEW*
+- **DELIVERABLE_5_CONFLICTS.pdf → [deliverable-5-conflicts.md](../content/knowledge/notes/deliverable-5-conflicts.md)** ⭐ *NEW*
 
-**12 Queued for Conversion:**
-- DELIVERABLE_2_OPTIONS.pdf (business model)
-- DELIVERABLE_3_RETAINER.pdf (retainer structure)
-- DELIVERABLE_5_CONFLICTS.pdf (conflict resolution)
+**9 Queued for Conversion:**
 - MASTER_SOURCE_MAP.pdf (system architecture)
 - Funding Research for WIP_IDIRNET.pdf
 - AI Technologies and Emerging Forms of Creative Practice
@@ -358,12 +358,12 @@ access_level: "leadership"  # Founders/exec
 | File | Purpose |
 |------|---------|
 | `CLAUDE.md` | Agent routing |
-| `ROADMAP.md` | Phase planning |
+| `docs/status/ROADMAP.md` | Phase planning |
 | `PLAYBOOK.md` | This document |
-| `HANDOVER.md` | System reference |
+| `docs/process/HANDOVER.md` | System reference |
 | `PDF_AUDIT.md` | PDF inventory |
 | `stubs/PDF_INDEX.md` | PDF metadata stubs |
-| `~/supabase/functions/` | Edge Functions |
+| `~/services/supabase/functions/` | Edge Functions |
 
 ### 6.3 Glossary
 

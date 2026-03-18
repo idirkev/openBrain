@@ -9,8 +9,8 @@ Last Updated: March 16, 2026
 | Resource | Location |
 |----------|----------|
 | **This File** | System overview, architecture, commands |
-| `ROADMAP.md` | All 15 phases, **current checkpoint**, next steps |
-| `PROGRESS_LOG.md` | **Day-by-day advancement tracker** — sequential progress |
+| `docs/status/ROADMAP.md` | All 15 phases, **current checkpoint**, next steps |
+| `docs/status/PROGRESS_LOG.md` | **Day-by-day advancement tracker** — sequential progress |
 | `CLAUDE_CODE_PROMPT.md` | **Copy-paste prompts for Claude Code sessions** |
 | `PLAYBOOK.md` | 16KB field guide: templates, document types, workflows |
 | `MIGRATION_GUIDE.md` | Complete migration: database → document system |
@@ -346,7 +346,7 @@ supabase functions deploy schedule-actions    # Reclaim/GCal/Todoist integration
 ### File Locations
 
 ```
-~/supabase/functions/
+~/services/supabase/functions/
 ├── ingest-thought/
 │   ├── index.ts       # Slack webhook handler
 │   └── deno.json
@@ -424,7 +424,7 @@ SELECT * FROM list_scheduled_jobs();
 
 ## Morning Briefing Dashboard
 
-**Location:** `~/OPENBRAIN/openBrain/apps/my-app/`
+**Location:** `~/OPENBRAIN/openBrain/apps/dashboard/`
 
 ### Stack
 - Next.js 15 + React 19 + TypeScript
@@ -454,7 +454,7 @@ SELECT * FROM list_scheduled_jobs();
 
 ### Run Locally
 ```bash
-cd apps/my-app
+cd apps/dashboard
 cp .env.local.example .env.local
 # Add your Supabase, OpenWeather, Reclaim keys
 npm run dev
@@ -611,7 +611,7 @@ RECLAIM_API_KEY=...
 | MIGRATION_GUIDE.md | `~/OPENBRAIN/openBrain/MIGRATION_GUIDE.md` | 27 KB |
 | MIGRATION_ASSESSMENT.md | `~/OPENBRAIN/openBrain/MIGRATION_ASSESSMENT.md` | 14.6 KB |
 | Migration Scripts | `~/OPENBRAIN/openBrain/scripts/migration/` | 4 files |
-| Updated ROADMAP.md | `~/OPENBRAIN/openBrain/ROADMAP.md` | 20 KB |
+| Updated ROADMAP.md | `~/OPENBRAIN/openBrain/docs/status/ROADMAP.md` | 20 KB |
 | KNOWLEDGE_ARCHITECTURE.md | `~/OPENBRAIN/openBrain/KNOWLEDGE_ARCHITECTURE.md` | 6 KB |
 | IDIRNET_EXTRACTION_SUMMARY.md | `~/OPENBRAIN/openBrain/IDIRNET_EXTRACTION_SUMMARY.md` | 11 KB |
 
@@ -632,7 +632,7 @@ supabase secrets set KEY=value
 psql $SUPABASE_DB_URL -f supabase/migrations/001_core_schema.sql
 
 # Dashboard
-cd apps/my-app && npm run dev
+cd apps/dashboard && npm run dev
 
 # Migration Scripts
 cd scripts/migration
@@ -670,9 +670,9 @@ ob codex
 
 | File | Purpose |
 |------|---------|
-| `HANDOVER.md` | This file — system overview |
+| `docs/process/HANDOVER.md` | This file — system overview |
 | `CLAUDE.md` | Agent routing, AI pipeline |
-| `ROADMAP.md` | All 15 phases, checkboxes, deploy commands |
+| `docs/status/ROADMAP.md` | All 15 phases, checkboxes, deploy commands |
 | `PLAYBOOK.md` | 16KB field guide: templates, workflows, examples |
 | `MIGRATION_GUIDE.md` | Complete migration plan (6 phases) |
 | `MIGRATION_ASSESSMENT.md` | Phase 1 assessment report |
@@ -689,4 +689,4 @@ ob codex
 3. **Or begin Tier 1 Migration** — Export decisions, transform, validate
 4. **Or deploy Dashboard** — Get Morning Briefing live on Vercel
 
-See `ROADMAP.md` for full phase details and priorities.
+See `docs/status/ROADMAP.md` for full phase details and priorities.

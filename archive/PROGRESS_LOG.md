@@ -47,14 +47,14 @@ Each entry records:
 | `PLAYBOOK.md` | 41 KB | Field guide: templates, workflows, examples |
 | `MIGRATION_GUIDE.md` | 27 KB | 6-phase migration plan |
 | `MIGRATION_ASSESSMENT.md` | 14.6 KB | Phase 1 assessment report |
-| `HANDOVER.md` | 28 KB | System overview (updated) |
+| `docs/process/HANDOVER.md` | 28 KB | System overview (updated) |
 | `AGENT_2_HANDOVER.md` | 13.8 KB | Next agent handover |
 | `CLAUDE_CODE_PROMPT.md` | 9.2 KB | **Copy-paste prompts for Claude Code** |
-| `ROADMAP.md` | 20 KB | 15 phases total (updated) |
+| `docs/status/ROADMAP.md` | 20 KB | 15 phases total (updated) |
 | `KNOWLEDGE_ARCHITECTURE.md` | 6 KB | TSM Framework |
 | `IDIRNET_EXTRACTION_SUMMARY.md` | 11 KB | Knowledge transfer |
 | `scripts/migration/` | 4 files | Export, transform, validate scripts |
-| `PROGRESS_LOG.md` | — | This file |
+| `docs/status/PROGRESS_LOG.md` | — | This file |
 
 **Checkpoint Status:** ✅ Phase 1 Complete (Assessment)
 

@@ -12,8 +12,8 @@ You've inherited a **knowledge management system** (Open Brain) that's transitio
 
 **First 5 minutes:**
 1. Read this file
-2. Read `ROADMAP.md` — check current phase
-3. Read `HANDOVER.md` — understand system architecture
+2. Read `docs/status/ROADMAP.md` — check current phase
+3. Read `docs/process/HANDOVER.md` — understand system architecture
 4. Decide: Migration work or Feature work?
 
 ---
@@ -27,7 +27,7 @@ You've inherited a **knowledge management system** (Open Brain) that's transitio
 | Slack capture pipeline | ✅ Working | `ingest-thought` Edge Function |
 | Meeting transcript processing | ✅ Working | `meeting-notes` Edge Function |
 | Template classification (19 templates) | ✅ Working | Both Edge Functions |
-| Morning Briefing Dashboard | ✅ Built | `apps/my-app/` |
+| Morning Briefing Dashboard | ✅ Built | `apps/dashboard/` |
 | Database (thoughts table) | ✅ Live | Supabase |
 | Embeddings + vector search | ✅ Working | OpenRouter + pgvector |
 
@@ -40,7 +40,7 @@ You've inherited a **knowledge management system** (Open Brain) that's transitio
 | Phase 1 Assessment | ✅ Complete | `MIGRATION_ASSESSMENT.md` (14.6 KB) |
 | Migration scripts | ✅ Ready | `scripts/migration/` |
 | TSM Framework integration | ✅ Documented | `KNOWLEDGE_ARCHITECTURE.md` |
-| Updated Handover | ✅ Complete | `HANDOVER.md` (28 KB) |
+| Updated Handover | ✅ Complete | `docs/process/HANDOVER.md` (28 KB) |
 
 ### What's Missing / In Progress
 
@@ -96,7 +96,7 @@ You have **three paths** to choose from. Pick one:
 **Day 1-2: Deploy**
 - [ ] Get Vercel account set up
 - [ ] Add environment variables (Supabase, OpenWeather, Reclaim)
-- [ ] Deploy `apps/my-app/`
+- [ ] Deploy `apps/dashboard/`
 - [ ] Test all API routes
 
 **Day 3-5: Quick Wins**
@@ -193,9 +193,9 @@ Read these **in order** before doing anything:
 | Order | File | Why |
 |-------|------|-----|
 | 1 | `AGENT_2_HANDOVER.md` | This file — you're here |
-| 2 | `PROGRESS_LOG.md` | **Day-by-day tracker** — see what happened yesterday |
-| 3 | `ROADMAP.md` | Current phase, what's done, what's next |
-| 4 | `HANDOVER.md` | System architecture, commands, current state |
+| 2 | `docs/status/PROGRESS_LOG.md` | **Day-by-day tracker** — see what happened yesterday |
+| 3 | `docs/status/ROADMAP.md` | Current phase, what's done, what's next |
+| 4 | `docs/process/HANDOVER.md` | System architecture, commands, current state |
 | 5 | `PLAYBOOK.md` | Document types, templates, workflows |
 | 6 | `MIGRATION_GUIDE.md` | If doing migration work |
 
@@ -318,7 +318,7 @@ create table document_links (
 ### Task 5: Deploy Dashboard to Vercel (2 hours)
 
 ```bash
-cd ~/OPENBRAIN/openBrain/apps/my-app
+cd ~/OPENBRAIN/openBrain/apps/dashboard
 
 # Create production env
 cp .env.local.example .env.production
@@ -420,8 +420,8 @@ These need **human decision** (probably Kev). Don't guess:
 **When stuck:** Read PLAYBOOK.md. It has examples, anti-patterns, and real workflows.
 
 **When done:** 
-1. Update `PROGRESS_LOG.md` with Day 2 entry
-2. Update `ROADMAP.md` "Current Checkpoint" section
+1. Update `docs/status/PROGRESS_LOG.md` with Day 2 entry
+2. Update `docs/status/ROADMAP.md` "Current Checkpoint" section
 3. Create `AGENT_3_HANDOVER.md` if there's more work
 
 ---
@@ -431,9 +431,9 @@ These need **human decision** (probably Kev). Don't guess:
 To ensure sequential progression, **every agent** must:
 
 ### At Start of Session
-1. Read `PROGRESS_LOG.md` — understand what happened yesterday
-2. Check `ROADMAP.md` — confirm current phase checkpoint
-3. Add new Day N entry to `PROGRESS_LOG.md`
+1. Read `docs/status/PROGRESS_LOG.md` — understand what happened yesterday
+2. Check `docs/status/ROADMAP.md` — confirm current phase checkpoint
+3. Add new Day N entry to `docs/status/PROGRESS_LOG.md`
 4. Update ROADMAP.md "Current Checkpoint" section
 
 ### During Session
@@ -442,11 +442,11 @@ To ensure sequential progression, **every agent** must:
 - Note decisions made
 
 ### At End of Session
-1. Complete Day N entry in `PROGRESS_LOG.md`
+1. Complete Day N entry in `docs/status/PROGRESS_LOG.md`
 2. Update Phase Progress Summary
 3. Add Day N+1 entry with "Pending" status
 4. Create/update `AGENT_N_HANDOVER.md` if handing off
-5. Update `ROADMAP.md` "Current Checkpoint"
+5. Update `docs/status/ROADMAP.md` "Current Checkpoint"
 
 ### Sequential Advancement Rules
 - **Daily Entry Required** — Every day of work gets a PROGRESS_LOG entry

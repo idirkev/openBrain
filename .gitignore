@@ -65,3 +65,9 @@ captures/
 .env.development
 .env.test
 .envrc
+
+# Claude Code
+.claude.json
+
+# Secrets
+*.secrets.*

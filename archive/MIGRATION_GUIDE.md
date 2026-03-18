@@ -1043,4 +1043,4 @@ CREATE POLICY debug_access ON documents FOR SELECT USING (true);
 
 ---
 
-**Questions?** Refer to [PLAYBOOK.md](./PLAYBOOK.md) for document type guidelines or [ROADMAP.md](./ROADMAP.md) for implementation priorities.
+**Questions?** Refer to [PLAYBOOK.md](./PLAYBOOK.md) for document type guidelines or [ROADMAP.md](./docs/status/ROADMAP.md) for implementation priorities.

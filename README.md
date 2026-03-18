@@ -252,7 +252,7 @@ graph LR
 └──────────────────────────────────────────────────┘
 ```
 
-See [ROADMAP.md](ROADMAP.md) for full details.
+See [Roadmap](docs/status/ROADMAP.md) for full details.
 
 ---
 
@@ -260,12 +260,10 @@ See [ROADMAP.md](ROADMAP.md) for full details.
 
 ```
 openBrain/
-├── ROADMAP.md                      # 16-phase development plan
 ├── CLAUDE.md                       # Agent routing instructions
-├── PROJECT_STATUS.md               # Current system status
-├── HANDOVER.md                     # v2.0 handover document
+├── README.md                       # Project overview
 │
-├── apps/my-app/                    # Morning Brief dashboard
+├── apps/dashboard/                 # Morning Brief dashboard
 │   ├── app/
 │   │   ├── api/
 │   │   │   ├── gemini-brief/       # AI morning summary
@@ -274,27 +272,27 @@ openBrain/
 │   │   │   ├── weather/            # OpenWeather
 │   │   │   ├── finance/            # Renewable tickers
 │   │   │   └── news/               # Good News RSS
-│   │   └── components/
-│   │       ├── GeminiBrief.tsx      # AI brief display
-│   │       ├── SmartScheduleButton  # Reclaim integration
-│   │       ├── IncentedStatus.tsx   # Token rewards UI
-│   │       └── ...                  # Weather, Finance, News
-│   └── lib/supabase.ts             # DB client
+│   └── src/
+│       ├── features/               # Dashboard domain components
+│       ├── components/ui/          # Shared UI primitives
+│       └── lib/                    # Shared app utilities
+│
+├── services/supabase/              # Repo-local Supabase function copy
+│   └── functions/                  # Google sync and auth functions
 │
 ├── integrations/
+│   ├── google/apps-script/         # Google Apps Script sources
 │   └── raycast/                    # macOS quick capture
-│       ├── src/api.ts              # MCP client
-│       ├── voice-capture-cli.sh    # Voice → Whisper → Slack
-│       └── ...                     # 5 command components
 │
-├── prompts/                        # Agent system prompts
-├── scripts/                        # CLI tools
-├── docs/                           # Architecture docs
-│   ├── INCENTED-INTEGRATION.md
-│   ├── DATA-INTAKE-ARCHITECTURE.md
-│   └── TSM-ORGANIZATIONAL-FRAMEWORK.md
+├── docs/
+│   ├── architecture/              # System design docs
+│   ├── guides/                    # Setup and deployment guides
+│   ├── process/                   # Commands, handoffs, templates
+│   └── status/                    # Roadmap, status, progress
 │
-└── stubs/                          # Future integrations
+├── prompts/                       # Agent system prompts
+├── scripts/                       # CLI tools
+└── stubs/                         # Future integrations
 ```
 
 Supabase Edge Functions live in `~/supabase/functions/` (separate deployment).
@@ -308,7 +306,7 @@ git clone https://github.com/idirkev/openBrain.git
 cd openBrain
 
 # Dashboard
-cd apps/my-app
+cd apps/dashboard
 cp .env.local.example .env.local    # Add Supabase + API keys
 npm install && npm run dev          # http://localhost:3000
 
