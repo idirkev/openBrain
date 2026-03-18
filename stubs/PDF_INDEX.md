@@ -16,23 +16,26 @@ These PDFs contain critical project knowledge and should be fully converted to m
 type: literature
 source: "PDF: DELIVERABLE_2_OPTIONS.pdf"
 location: "idirnet/idirnet/idirnet_ROOT/content/knowledge/research/pdfs/"
-status: "stub"
+converted_to: "content/knowledge/notes/deliverable-2-options.md"
+status: "converted"
 priority: "critical"
-convert_by: "2026-03-23"
+converted_date: "2026-03-17"
 tags: [deliverable, strategy, business-model]
 ---
 
 ## Contents
 Business model options for idirnet/Lightheart engagement.
 
-## Convert When
-- Before retainer negotiations with Brendan
-- Before team onboarding decisions
+## Conversion Complete
+- **Location:** `content/knowledge/notes/deliverable-2-options.md`
+- **Size:** ~30KB
+- **Contains:** 6 commercial structure options with comparative analysis
 
-## Key Topics (estimated)
+## Key Topics
 - Day rate vs retainer models
-- Hybrid approaches
-- Revenue projections
+- PAYE vs B2B vs Partnership structures
+- IR35 compliance considerations
+- Strategic recommendations
 ```
 
 ---
@@ -43,23 +46,26 @@ Business model options for idirnet/Lightheart engagement.
 type: literature
 source: "PDF: DELIVERABLE_3_RETAINER.pdf"
 location: "idirnet/idirnet/idirnet_ROOT/content/knowledge/research/pdfs/"
-status: "stub"
+converted_to: "content/knowledge/notes/deliverable-3-retainer.md"
+status: "converted"
 priority: "critical"
-convert_by: "2026-03-23"
+converted_date: "2026-03-17"
 tags: [deliverable, strategy, retainer, pricing]
 ---
 
 ## Contents
 Detailed retainer model structure, pricing tiers, scope boundaries.
 
-## Convert When
-- Before client discussions
-- Before contract drafting
+## Conversion Complete
+- **Location:** `content/knowledge/notes/deliverable-3-retainer.md`
+- **Size:** ~13KB
+- **Contains:** Three-tier retainer structure with add-on packages
 
-## Key Topics (estimated)
-- Retainer tiers (bronze/silver/gold)
-- Scope inclusions/exclusions
-- Overage handling
+## Key Topics
+- Tier 1 (€12k/month): Launch Critical - 50% capacity
+- Tier 2 (€6k/month): Operational - 25% capacity
+- Tier 3 (€2.5k/month): Advisory - 10% capacity
+- Surge Capacity and Legacy Client Firewall add-ons
 ```
 
 ---
@@ -70,23 +76,26 @@ Detailed retainer model structure, pricing tiers, scope boundaries.
 type: literature
 source: "PDF: DELIVERABLE_5_CONFLICTS.pdf"
 location: "idirnet/idirnet/idirnet_ROOT/content/knowledge/research/pdfs/"
-status: "stub"
+converted_to: "content/knowledge/notes/deliverable-5-conflicts.md"
+status: "converted"
 priority: "critical"
-convert_by: "2026-03-23"
+converted_date: "2026-03-17"
 tags: [deliverable, legal, governance, conflict-resolution]
 ---
 
 ## Contents
 Conflict of interest policies and resolution procedures.
 
-## Convert When
-- Before company registration finalization
-- Before shareholder agreements
+## Conversion Complete
+- **Location:** `content/knowledge/notes/deliverable-5-conflicts.md`
+- **Size:** ~26KB
+- **Contains:** Two-variant framework with middle ground recommendation
 
-## Key Topics (estimated)
-- Conflict identification
-- Disclosure requirements
-- Resolution procedures
+## Key Topics
+- Variant A: Lightheart-Friendly (broad confidentiality, 12-month non-compete)
+- Variant B: IDIRNET-Friendly (narrow confidentiality, no non-compete)
+- Legacy client carve-outs (Diageo, Jon Hopkins, etc.)
+- Middle ground recommendation for negotiation
 ```
 
 ---
@@ -608,9 +617,9 @@ These PDFs are duplicates, superseded, or captured elsewhere.
 ## Next Actions
 
 ### This Week
-- [ ] Convert DELIVERABLE_2_OPTIONS.pdf
-- [ ] Convert DELIVERABLE_3_RETAINER.pdf
-- [ ] Convert DELIVERABLE_5_CONFLICTS.pdf
+- [x] Convert DELIVERABLE_2_OPTIONS.pdf → deliverable-2-options.md
+- [x] Convert DELIVERABLE_3_RETAINER.pdf → deliverable-3-retainer.md
+- [x] Convert DELIVERABLE_5_CONFLICTS.pdf → deliverable-5-conflicts.md
 - [ ] Convert MASTER_SOURCE_MAP.pdf
 
 ### Next Week

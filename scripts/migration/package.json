@@ -11,7 +11,6 @@
     "transform": "tsx transform-to-markdown.ts",
     "transform:decisions": "tsx transform-to-markdown.ts --input decisions.json --output-dir ../../documents/20-permanent",
     "validate": "tsx validate-links.ts",
-    "sync:git-to-db": "tsx sync-to-database.ts",
     "full:migrate-decisions": "npm run export:decisions && npm run transform:decisions && npm run validate"
   },
   "dependencies": {

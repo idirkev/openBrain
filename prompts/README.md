@@ -24,8 +24,8 @@ Run these in order. Each feeds the next.
 
 | File | Purpose |
 |------|---------|
-| `../docs/DATA-INTAKE-ARCHITECTURE.md` | How information enters Open Brain (5 channels) |
-| `../docs/TSM-ORGANIZATIONAL-FRAMEWORK.md` | How data is organized through the TSM lens (21 nodes) |
+| `../docs/architecture/DATA-INTAKE-ARCHITECTURE.md` | How information enters Open Brain (5 channels) |
+| `../docs/architecture/TSM-ORGANIZATIONAL-FRAMEWORK.md` | How data is organized through the TSM lens (21 nodes) |
 
 ## Quick Start
 

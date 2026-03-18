@@ -323,7 +323,7 @@ Repeat C1 process for remaining 4 transcripts.
 #### D2. Deprecate Old Files
 
 **Steps:**
-1. [ ] Add header to `ROADMAP.md`:
+1. [ ] Add header to `docs/status/ROADMAP.md`:
    ```markdown
    # DEPRECATED — See PLAYBOOK_UNIFIED.md
    ```

@@ -32,7 +32,7 @@ show_context_info() {
             ob_info "Output feeds into Opus for decision-making."
             echo ""
             ob_info "Scope:"
-            ob_info "  - All Edge Functions, ROADMAP.md, HANDOVER.md, CLAUDE.md"
+            ob_info "  - All Edge Functions, docs/status/ROADMAP.md, docs/process/HANDOVER.md, CLAUDE.md"
             ob_info "  - Current phase status and blockers"
             ob_info "  - Codebase patterns, dependencies, tech debt"
             PROMPT="You are a deep research agent. Your output will be used by Claude Opus to make architecture and planning decisions. Be thorough. Read every file in scope. Produce a structured research brief with: 1) Current System State (what exists, what works, what is deployed), 2) Codebase Patterns (how code is structured, shared patterns, conventions), 3) Open Issues and Tech Debt (bugs, missing validation, security gaps, incomplete features), 4) Dependencies and External Services (what APIs, what versions, what limits), 5) Blockers and Risks (what could go wrong, what is fragile), 6) Opportunities (what could be improved, what is ready for next phase). Be factual. Include file paths and line numbers. No opinions on architecture. Just data for the decision-maker. ${CODEX_FORMAT}"
@@ -65,7 +65,7 @@ show_context_info() {
             ob_info "  - Code quality across all functions"
             ob_info "  - Open issues and tech debt"
             ob_info "  - Recommended next actions"
-            PROMPT="You are a senior technical lead reviewing the Open Brain project. Read ROADMAP.md, HANDOVER.md, and all Edge Function code. Produce a structured report card with: Executive Summary, Project Structure, Critical Issues, High Priority Tasks, Medium Priority Tasks, Decision Register (pending decisions), and Suggested Next Session Flow (3 options). Be specific and actionable. Use the same format as a Kimi Code Next Tasks review. ${CODEX_FORMAT}"
+            PROMPT="You are a senior technical lead reviewing the Open Brain project. Read docs/status/ROADMAP.md, docs/process/HANDOVER.md, and all Edge Function code. Produce a structured report card with: Executive Summary, Project Structure, Critical Issues, High Priority Tasks, Medium Priority Tasks, Decision Register (pending decisions), and Suggested Next Session Flow (3 options). Be specific and actionable. Use the same format as a Kimi Code Next Tasks review. ${CODEX_FORMAT}"
             ;;
         *)
             printf "%b  Unknown context: %s%b\n" "${UI_FAIL}" "$CONTEXT" "${NC}"
@@ -95,8 +95,8 @@ $PROMPT
 ## Project Files
 
 - Edge Functions: $FUNCTIONS_DIR/ingest-thought/index.ts, $FUNCTIONS_DIR/meeting-notes/index.ts
-- Roadmap: $PROJECT_ROOT/ROADMAP.md
-- Handover: $PROJECT_ROOT/HANDOVER.md
+- Roadmap: $PROJECT_ROOT/docs/status/ROADMAP.md
+- Handover: $PROJECT_ROOT/docs/process/HANDOVER.md
 - Agent routing: $PROJECT_ROOT/CLAUDE.md
 
 ## Architecture

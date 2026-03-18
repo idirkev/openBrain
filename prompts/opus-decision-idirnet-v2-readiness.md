@@ -19,9 +19,9 @@ Your job: Make the architecture decisions that unblock idirnet v2.
 READ THESE INPUTS:
 - Kimi's ground truth report (from research step)
 - Kimi's documentation overlap analysis (from review step)
-- ~/OPENBRAIN/openBrain/docs/DATA-INTAKE-ARCHITECTURE.md
-- ~/OPENBRAIN/openBrain/docs/TSM-ORGANIZATIONAL-FRAMEWORK.md
-- ~/OPENBRAIN/openBrain/ROADMAP.md (phases 9-15 especially)
+- ~/OPENBRAIN/openBrain/docs/architecture/DATA-INTAKE-ARCHITECTURE.md
+- ~/OPENBRAIN/openBrain/docs/architecture/TSM-ORGANIZATIONAL-FRAMEWORK.md
+- ~/OPENBRAIN/openBrain/docs/status/ROADMAP.md (phases 9-15 especially)
 
 DECISIONS REQUIRED:
 

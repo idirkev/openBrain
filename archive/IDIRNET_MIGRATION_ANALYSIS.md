@@ -354,7 +354,7 @@ const results = index.search(query);
 
 **Key Innovation:** Use `postgres-meta` or `pgvector` directly from Deno:
 ```typescript
-// supabase/functions/search-unified/index.ts
+// services/supabase/functions/search-unified/index.ts
 import { createClient } from '@supabase/supabase-js';
 
 Deno.serve(async (req) => {

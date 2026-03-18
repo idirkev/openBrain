@@ -27,7 +27,7 @@ SCAN THESE LOCATIONS:
    - scheduled_actions table (exists or just documented?)
    - RLS policies (active or placeholder?)
 
-3. Dashboard: ~/OPENBRAIN/openBrain/apps/my-app/
+3. Dashboard: ~/OPENBRAIN/openBrain/apps/dashboard/
    - Does it build? Run: npm run build
    - What API routes exist and what do they return?
    - Is it deployed anywhere? Check for Vercel config.
