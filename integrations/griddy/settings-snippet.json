@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.local/bin/griddy",
+            "command": "$HOME/.local/bin/griddy --terminals",
             "timeout": 10,
             "async": true
           }

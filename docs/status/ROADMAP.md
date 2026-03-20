@@ -14,7 +14,7 @@ Last updated: 2026-03-18
 | **Next** | LINK interactive graph prototype, Raycast install |
 
 **Recent Completions — 2026-03-17:**
-- ✅ System State Audit (Agent 1): 4 edge functions, 7 migrations verified
+- ✅ System State Audit (Agent 1): 10+ edge functions on disk (4 core active, 6 Google Workspace pending OAuth), 7 migrations verified
 - ✅ Raycast Extension Built: 5 commands (obc, obs, obl, obst, obq)
 - ✅ TSM Obligation Mapper: 12 nodes mapped for Kev
 - ✅ Pipeline Validation: All 7 steps tested in dry-run
@@ -30,7 +30,7 @@ Last updated: 2026-03-18
 
 **Critical Blockers:** All resolved (2026-03-17)
 1. ~~🔴 Dashboard build fails~~ → ✅ Resolved via `.env.local`
-2. ~~🟡 Edge functions deployment status unknown~~ → ✅ All 4 functions ACTIVE
+2. ~~🟡 Edge functions deployment status unknown~~ → ✅ 4 core functions ACTIVE; 6 Google Workspace functions deployed, OAuth pending
 3. ~~🟡 MCP_ACCESS_KEY setup undocumented~~ → ✅ Confirmed working
 
 **TSM Status:** 9/12 obligations fulfilled (75%)
@@ -274,7 +274,7 @@ Automated inbox scanning for action items, deadlines, and correspondence.
 - [x] google_sync_state table — incremental sync tracking
 - [x] Mark processed emails with Gmail label "OB-processed" — auto-created by Edge Function
 - [x] Morning briefing includes EmailInbox component — action-required, overdue highlight, days waiting
-- [ ] Deploy email-ingest: cd ~/OPENBRAIN/openBrain && supabase functions deploy email-ingest
+- [x] Deploy email-ingest: cd ~/OPENBRAIN/openBrain && supabase functions deploy email-ingest
 - [ ] Configure Apps Script: paste integrations/google/apps-script/gmail-apps-script.js at script.google.com, set Script Properties (EDGE_FUNCTION_URL, MCP_ACCESS_KEY), run setupTrigger()
 - [ ] Run full sync once to populate email_items: POST email-ingest with {"action":"fullSync"}
 
@@ -613,12 +613,19 @@ consequences:
 
 ### Production Status
 ```
-✅ ingest-thought - deployed
-✅ meeting-notes - deployed
-⏳ open-brain-mcp - ready, deploy pending
-⏳ schedule-actions - ready, deploy pending
-⏳ Raycast extension - built, install pending
-🔴 Dashboard - blocked (missing env vars)
+✅ ingest-thought     - ACTIVE v6 (deployed)
+✅ meeting-notes      - ACTIVE v7 (deployed)
+✅ open-brain-mcp     - ACTIVE v2 (deployed)
+✅ schedule-actions   - ACTIVE v1 (deployed)
+⏳ email-ingest       - deployed v1, OAuth not yet configured
+⏳ calendar-sync      - deployed v1, OAuth not yet configured
+⏳ drive-sync         - deployed v1, OAuth not yet configured
+⏳ tasks-sync         - deployed v1, OAuth not yet configured
+⏳ google-auth        - deployed v1, OAuth not yet configured
+⏳ google-webhook     - deployed v1, OAuth not yet configured
+🔴 email-to-thought   - on disk, deploy status unknown
+⏳ Raycast extension  - built, install pending
+🔴 Dashboard          - blocked (missing env vars)
 ```
 
 ### Critical Blockers
@@ -628,7 +635,7 @@ consequences:
    
 2. **MCP_ACCESS_KEY** — Document setup in Supabase secrets
 
-3. **Edge function deployment** — Run `supabase functions deploy` for all 4 functions
+3. **Edge function deployment** — 4 core functions active. Run `supabase functions deploy` + configure OAuth for 6 Google Workspace functions (10+ Edge Functions total: 4 core active, 6 Google Workspace pending OAuth)
 
 ### After each phase build
 ```bash
